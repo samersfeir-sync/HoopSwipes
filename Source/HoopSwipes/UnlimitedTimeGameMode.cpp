@@ -1,0 +1,67 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+
+#include "UnlimitedTimeGameMode.h"
+#include "BasketballHoop.h"
+#include "BallInterface.h"
+#include "GameInstanceInterface.h"
+#include "GamePlayWidget.h"
+#include "Ground.h"
+#include "Kismet/GameplayStatics.h"
+
+AUnlimitedTimeGameMode::AUnlimitedTimeGameMode()
+{
+	GameModeType = EGameModeType::Unlimited;
+}
+
+void AUnlimitedTimeGameMode::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (BasketballHoop)
+	{
+		BasketballHoop->OnScored.AddDynamic(this, &AParentGameMode::ActivateNextBall);
+	}
+
+	AGround* Ground = Cast<AGround>(UGameplayStatics::GetActorOfClass(World, AGround::StaticClass()));
+
+	if (Ground)
+	{
+		Ground->OnBallHitGround.AddDynamic(this, &AParentGameMode::EndGame);
+	}
+
+	HighScore = HighScoresData.UnlimitedTimeScore;
+	GamePlayWidgetInstace->UpdateHighScoreUI(HighScore);
+}
+
+void AUnlimitedTimeGameMode::OnTriggerOverlap(AActor* OverlappedActor, AActor* OtherActor)
+{
+	Super::OnTriggerOverlap(OverlappedActor, OtherActor);
+
+	if (BallInterface)
+	{
+		if(!BallInterface->GetScoredBoolean())
+		{
+			EndGame();
+		}
+
+		BallInterface->SetScoredBoolean(false);
+	}
+}
+
+void AUnlimitedTimeGameMode::RestartGame()
+{
+	Super::RestartGame();
+
+	ActivateNextBall(false);
+}
+
+void AUnlimitedTimeGameMode::UpdateScore()
+{
+	Super::UpdateScore();
+
+	if (CurrentScore % 5 == 0 && !BasketballHoop->IsMovementActive())
+	{
+		BasketballHoop->ActivateMovement();
+	}
+}
