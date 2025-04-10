@@ -13,7 +13,6 @@ AGround::AGround()
 	GroundMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GroundMesh"));
 	RootComponent = GroundMesh;
 	GroundMesh->SetNotifyRigidBodyCollision(true);
-	GroundMesh->SetRenderCustomDepth(true);
 }
 
 // Called when the game starts or when spawned

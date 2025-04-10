@@ -18,7 +18,6 @@ ABasketballHoop::ABasketballHoop()
 	HoopMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("HoopMesh"));
 	RootComponent = HoopMesh;
 	HoopMesh->SetMobility(EComponentMobility::Movable);
-	HoopMesh->SetRenderCustomDepth(true);
 	HoopMesh->SetNotifyRigidBodyCollision(true);
 
 	ScoreCollision = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ScoreCollision"));

@@ -9,11 +9,19 @@ void USplashScreenWidget::NativeConstruct()
 {
     Super::NativeConstruct();
     {
-        MediaPlayer->OpenSource(MediaSource);
-        MediaPlayer->OnEndReached.AddDynamic(this, &USplashScreenWidget::OnVideoFinished);
+        if (MediaPlayer && MediaSource)
+        {
+            MediaPlayer->OpenSource(MediaSource);
+
+            if (SplashSound)
+            {
+                UGameplayStatics::PlaySound2D(this, SplashSound);
+            }
+
+            MediaPlayer->OnEndReached.AddDynamic(this, &USplashScreenWidget::OnVideoFinished);
+        }
     }
 }
-
 
 void USplashScreenWidget::OnVideoFinished()
 {

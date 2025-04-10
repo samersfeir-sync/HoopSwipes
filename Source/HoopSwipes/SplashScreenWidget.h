@@ -15,7 +15,7 @@ UCLASS()
 class HOOPSWIPES_API USplashScreenWidget : public UUserWidget
 {
 	GENERATED_BODY()
-	
+
 private:
 
 	virtual void NativeConstruct() override;
@@ -36,4 +36,7 @@ private:
 	void OnVideoFinished();
 
 	void OpenMainMenuMap();
+
+	UPROPERTY(EditDefaultsOnly, Category = "Audio")
+	USoundBase* SplashSound;
 };

@@ -54,9 +54,11 @@ void ATimedGameMode::RestartGame()
 
 	ScoreTarget = 10;
 	TotalSeconds = 20;
+	TargetMultiplier = 2;
 	GamePlayWidgetInstace->UpdateTargetScoreUI(ScoreTarget);
 	TimerWidget->UpdateTime(TotalSeconds);
 	PlayerController->bEnableTouchEvents = true;
+	World->GetTimerManager().SetTimer(TimerHandle, this, &ATimedGameMode::ReduceGameTime, 1.0f, true);
 }
 
 void ATimedGameMode::ReduceGameTime()
@@ -66,6 +68,7 @@ void ATimedGameMode::ReduceGameTime()
 
 	if (TotalSeconds <= 0)
 	{
+		World->GetTimerManager().ClearTimer(TimerHandle);
 		EndGame();
 	}
 }
@@ -82,11 +85,14 @@ void ATimedGameMode::UpdateScore()
 {
 	Super::UpdateScore();
 
-	if (CurrentScore >= ScoreTarget)
+	if (TotalSeconds > 0)
 	{
-		ScoreTarget = ScoreTarget + (10 * TargetMultiplier);
-		TargetMultiplier++;
-		GamePlayWidgetInstace->UpdateTargetScoreUI(ScoreTarget);
-		TotalSeconds += 15;
+		if (CurrentScore >= ScoreTarget)
+		{
+			ScoreTarget = ScoreTarget + (10 * TargetMultiplier);
+			TargetMultiplier++;
+			GamePlayWidgetInstace->UpdateTargetScoreUI(ScoreTarget);
+			TotalSeconds += 15;
+		}
 	}
 }
