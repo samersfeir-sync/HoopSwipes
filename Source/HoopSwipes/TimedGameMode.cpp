@@ -93,6 +93,7 @@ void ATimedGameMode::UpdateScore()
 			TargetMultiplier++;
 			GamePlayWidgetInstace->UpdateTargetScoreUI(ScoreTarget);
 			TotalSeconds += 15;
+			TimerWidget->UpdateTime(TotalSeconds);
 		}
 	}
 }
