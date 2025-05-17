@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/SaveGame.h"
 #include "HighScoreStruct.h"
+#include "UserProgression.h"
 #include "GameSave.generated.h"
 
 /**
@@ -20,4 +21,7 @@ public:
 
 	UPROPERTY()
 	FHighScoreData HighScores;
+
+	UPROPERTY()
+	FUserProgression UserProgression;
 };

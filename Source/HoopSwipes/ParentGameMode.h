@@ -96,12 +96,12 @@ protected:
 
 	UWorld* World = nullptr;
 
+	FTransform OriginalHoopTransform = FTransform::Identity;
+
 private:
 
 	ACameraActor* Camera = nullptr;
 	FOnCameraFetched CameraFetchedDelegate;
-
-	FTransform OriginalHoopTransform = FTransform::Identity;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Parameters")
 	float NewBallSpawnOffset = 5.0f;

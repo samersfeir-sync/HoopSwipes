@@ -5,11 +5,25 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "BallInterface.h"
+#include "BallType.h"
 #include "Ball.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnBallLaunched, bool, RandomLocation);
 
 class IGameModeInterface;
+class IGameInstanceInterface;
+
+USTRUCT(BlueprintType)
+struct FBallMeshSettings
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UStaticMesh* Mesh = nullptr;
+
+	UPROPERTY(EditDefaultsOnly)
+	FVector Scale = FVector(0.25f, 0.25f, 0.25f);
+};
 
 UCLASS()
 class HOOPSWIPES_API ABall : public AActor, public IBallInterface
@@ -75,7 +89,7 @@ private:
 
 	bool bScored = false;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Components");
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components", meta = (AllowPrivateAccess = "true"));
 	UStaticMeshComponent* BallMesh;
 
 	UFUNCTION()
@@ -90,4 +104,16 @@ private:
 	USoundBase* LaunchSound;
 
 	bool bSwish = true;
+
+	EBallType BallType = EBallType::Basketball;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ball", meta = (AllowPrivateAccess = "true"))
+	TMap<EBallType, FBallMeshSettings> BallTypeToMeshSettings;
+
+	void ApplyBallSettings();
+
+	IGameInstanceInterface* GameInstanceInterface = nullptr;
+
+	virtual void OnConstruction(const FTransform& Transform) override;
+
 };

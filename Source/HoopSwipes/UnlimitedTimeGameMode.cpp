@@ -54,14 +54,27 @@ void AUnlimitedTimeGameMode::RestartGame()
 	Super::RestartGame();
 
 	ActivateNextBall(false);
+
+	if (BasketballHoop)
+	{
+		BasketballHoop->DeactivateMovement();
+		BasketballHoop->SetActorTransform(OriginalHoopTransform);
+		BasketballHoop->ResetMovementSpeed();
+	}
 }
 
 void AUnlimitedTimeGameMode::UpdateScore()
 {
 	Super::UpdateScore();
 
-	if (CurrentScore % 5 == 0 && !BasketballHoop->IsMovementActive())
+	if (CurrentScore % 5 == 0)
 	{
-		BasketballHoop->ActivateMovement();
+		if (!BasketballHoop->IsMovementActive())	
+				BasketballHoop->ActivateMovement();
+
+		else
+		{
+			BasketballHoop->IncreaseSpeed(10);
+		}
 	}
 }

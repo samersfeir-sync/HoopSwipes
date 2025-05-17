@@ -9,15 +9,17 @@
 #include "Components/TextBlock.h"
 #include "GameInstanceInterface.h"
 #include "HighScoreStruct.h"
+#include "ShopScreenWidget.h"
+#include "Components/CanvasPanel.h"
 
 void UMainMenuWidget::NativeConstruct()
 {
 	World = GetWorld();
 
+	IGameInstanceInterface* GameInstanceInterface = UFunctionsLibrary::GetGameInstanceInterface(World);
+
 	if (World)
 	{
-		IGameInstanceInterface* GameInstanceInterface = UFunctionsLibrary::GetGameInstanceInterface(World);
-
 		if (GameInstanceInterface)
 		{
 			FHighScoreData HighScoresData = GameInstanceInterface->GetHighScoreStruct();
@@ -48,6 +50,26 @@ void UMainMenuWidget::NativeConstruct()
 	{
 		ExitGameButton->OnClicked.AddDynamic(this, &UMainMenuWidget::ExitGame);
 	}
+
+	if (ShopButton)
+	{
+		ShopButton->OnClicked.AddDynamic(this, &UMainMenuWidget::ShopButtonClicked);
+	}
+
+	if (ShopScreen)
+	{
+		if (ShopScreen->BackButton)
+		{
+			ShopScreen->BackButton->OnClicked.AddDynamic(this, &UMainMenuWidget::OnShopBackButtonClicked);
+		}
+	}
+}
+
+
+void UMainMenuWidget::OnShopBackButtonClicked()
+{
+	MainMenuScreenContainer->SetVisibility(ESlateVisibility::Visible);
+	ShopScreen->SetVisibility(ESlateVisibility::Hidden);
 }
 
 void UMainMenuWidget::UnlimitedTimeButtonClicked()
@@ -78,4 +100,10 @@ void UMainMenuWidget::ExitGame()
 void UMainMenuWidget::SetHighScoresTexts(UTextBlock* HighScoreTextBlock, int HighScore)
 {
 	HighScoreTextBlock->SetText(FText::AsNumber(HighScore));
+}
+
+void UMainMenuWidget::ShopButtonClicked()
+{
+	MainMenuScreenContainer->SetVisibility(ESlateVisibility::Hidden);
+	ShopScreen->SetVisibility(ESlateVisibility::Visible);
 }

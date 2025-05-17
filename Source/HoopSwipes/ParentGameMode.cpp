@@ -47,12 +47,6 @@ void AParentGameMode::RestartGame()
 
 	CurrentScore = 0;
 
-	if (BasketballHoop)
-	{
-		BasketballHoop->DeactivateMovement();
-		BasketballHoop->SetActorTransform(OriginalHoopTransform);
-	}
-
 	if (GamePlayWidgetInstace)
 	{
 		GamePlayWidgetInstace->ShowRestartButton(false);
@@ -76,6 +70,14 @@ void AParentGameMode::ActivateNextBall(bool RandomLocation)
 	if (PoolManager)
 	{
 		FTransform SpawnTransform = OriginalBallTransform;
+
+		FRotator RandomRotation = FRotator(
+			FMath::FRandRange(0.f, 360.f),
+			FMath::FRandRange(0.f, 360.f),
+			FMath::FRandRange(0.f, 360.f)
+		);
+
+		SpawnTransform.SetRotation(RandomRotation.Quaternion());
 
 		if (RandomLocation)
 		{

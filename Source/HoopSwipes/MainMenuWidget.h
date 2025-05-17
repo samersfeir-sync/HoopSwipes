@@ -8,6 +8,8 @@
 
 class UButton;
 class UTextBlock;
+class UShopScreenWidget;
+class UCanvasPanel;
 
 UCLASS()
 class HOOPSWIPES_API UMainMenuWidget : public UUserWidget
@@ -45,4 +47,20 @@ private:
 	void ExitGame();
 
 	void SetHighScoresTexts(UTextBlock* HighScoreTextBlock, int HighScore);
+
+	UPROPERTY(meta = (BindWidget))
+	UButton* ShopButton;
+
+	UFUNCTION()
+	void ShopButtonClicked();
+
+	UPROPERTY(meta = (BindWidget))
+	UShopScreenWidget* ShopScreen;
+
+	UPROPERTY(meta = (BindWidget))
+	UCanvasPanel* MainMenuScreenContainer;
+
+	UFUNCTION()
+	void OnShopBackButtonClicked();
+
 };

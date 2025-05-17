@@ -6,6 +6,9 @@
 #include "Engine/GameInstance.h"
 #include "GameInstanceInterface.h"
 #include "HighScoreStruct.h"
+#include "BallType.h"
+#include "BallsShopStruct.h"
+#include "UserProgression.h"
 #include "GameInfoInstance.generated.h"
 
 class UGameSave;
@@ -25,6 +28,21 @@ public:
 	
 	virtual FHighScoreData GetHighScoreStruct() const override;
 
+	virtual EBallType GetBallType() const override;
+
+	virtual void SetBallType(EBallType NewBallType) override;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Shop")
+	TArray<FBallsShopStruct> ShopItems;
+
+	virtual TArray<FBallsShopStruct> GetShopStruct() const override;
+
+	virtual void SaveUserProgression(FUserProgression NewUserProgression) override;
+
+	virtual void LoadUserProgression() override;
+
+	virtual FUserProgression GetUserProgression() const override;
+
 private:
 
 	virtual void Init() override;
@@ -34,7 +52,16 @@ private:
 	FVector2D ViewportSize;
 
 	UPROPERTY()
-	UGameSave* SaveGame = nullptr;
+	UGameSave* SG_HighScore = nullptr;
+
+	UPROPERTY()
+	UGameSave* SG_UserProgression = nullptr;
 
 	FHighScoreData HighScores;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Ball")
+	EBallType BallType = EBallType::Basketball;
+
+	UPROPERTY(EditDefaultsOnly, Category = "User Progression")
+	FUserProgression UserProgression;
 };

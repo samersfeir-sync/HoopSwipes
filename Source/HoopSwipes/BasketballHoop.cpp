@@ -33,7 +33,8 @@ ABasketballHoop::ABasketballHoop()
 
 	MovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("MovementComponent"));
 	MovementComponent->ProjectileGravityScale = 0.0f;
-	MovementComponent->InitialSpeed = 80.0f;
+	MovementComponent->InitialSpeed = MinMovementSpeed;
+	MovementComponent->MaxSpeed = MaxMovementSpeed;
 	MovementComponent->Velocity = FVector(1.0f, 0.0f, 0.0f);
 	MovementComponent->bAutoActivate = false;
 
@@ -97,10 +98,28 @@ void ABasketballHoop::ActivateMovement()
 	}
 }
 
-
 bool ABasketballHoop::IsMovementActive() const
 {
 	return MovementComponent->IsActive();
+}
+
+void ABasketballHoop::IncreaseSpeed(float ByPercentage)
+{
+	if (MovementComponent)
+	{
+		float CurrentSpeed = MovementComponent->InitialSpeed;
+		float NewSpeed = CurrentSpeed * (1.0f + ByPercentage / 100.0f);
+
+		MovementComponent->InitialSpeed = NewSpeed;
+		FVector CurrentVelocity = MovementComponent->Velocity;
+		FVector NewVelocity = CurrentVelocity.GetSafeNormal() * NewSpeed;
+		MovementComponent->Velocity = NewVelocity;
+	}
+}
+
+void ABasketballHoop::ResetMovementSpeed()
+{
+	MovementComponent->InitialSpeed = MinMovementSpeed;
 }
 
 void ABasketballHoop::OnScoreOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,

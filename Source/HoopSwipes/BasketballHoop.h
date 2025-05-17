@@ -46,9 +46,13 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	UWidgetComponent* TimeWidgetComponent;
 
+	void IncreaseSpeed(float ByPercentage);
+
+	void ResetMovementSpeed();
+
 private:
 
-	UPROPERTY(EditDefaultsOnly, Category = "Components")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* HoopMesh;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
@@ -60,7 +64,7 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
 	UBoxComponent* RightEdgeCollision;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Components")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	UProjectileMovementComponent* MovementComponent;
 
 	UFUNCTION()
@@ -74,4 +78,8 @@ private:
 	void OnHoopHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
+	UPROPERTY(EditDefaultsOnly, Category = "Parameters")
+	float MinMovementSpeed = 80.0f;
+	UPROPERTY(EditDefaultsOnly, Category = "Parameters")
+	float MaxMovementSpeed = 150.0f;
 };

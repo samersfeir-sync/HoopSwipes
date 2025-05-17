@@ -5,6 +5,9 @@
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
 #include "GameModeEnum.h"
+#include "BallType.h"
+#include "BallsShopStruct.h"
+#include "UserProgression.h"
 #include "GameInstanceInterface.generated.h"
 
 // This class does not need to be modified.
@@ -30,5 +33,17 @@ public:
 	virtual void LoadHighScore() = 0;
 
 	virtual FHighScoreData GetHighScoreStruct() const = 0;
+
+	virtual EBallType GetBallType() const = 0;
+
+	virtual void SetBallType(EBallType NewBallType) = 0;
+
+	virtual TArray<FBallsShopStruct> GetShopStruct() const = 0;
+
+	virtual void SaveUserProgression(FUserProgression NewUserProgression) = 0;
+
+	virtual void LoadUserProgression() = 0;
+
+	virtual FUserProgression GetUserProgression() const = 0;
 
 };

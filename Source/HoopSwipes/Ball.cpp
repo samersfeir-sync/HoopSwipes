@@ -3,6 +3,7 @@
 #include "Ball.h"
 #include "FunctionsLibrary.h"
 #include "GameModeInterface.h"
+#include "GameInstanceInterface.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -13,6 +14,7 @@ ABall::ABall()
 
 	BallMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BallMesh"));
 	RootComponent = BallMesh;
+	BallMesh->SetUsingAbsoluteScale(true);
 	BallMesh->SetSimulatePhysics(true);
 	BallMesh->SetNotifyRigidBodyCollision(true);
 	BallMesh->SetCollisionProfileName(TEXT("PhysicsActor"));
@@ -39,12 +41,6 @@ void ABall::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (BallMesh)
-	{
-		BallMesh->OnInputTouchBegin.AddDynamic(this, &ABall::OnTouchBegin);
-		BallMesh->OnInputTouchEnd.AddDynamic(this, &ABall::OnTouchEnd);
-	}
-
 	UWorld* World = GetWorld();
 
 	if (World)
@@ -59,6 +55,12 @@ void ABall::BeginPlay()
 		{
 			OnBallLaunched.AddDynamic(GameModeInterface, &IGameModeInterface::ActivateNextBall);
 		}
+	}
+	
+	if (BallMesh)
+	{
+		BallMesh->OnInputTouchBegin.AddDynamic(this, &ABall::OnTouchBegin);
+		BallMesh->OnInputTouchEnd.AddDynamic(this, &ABall::OnTouchEnd);
 	}
 }
 
@@ -116,4 +118,30 @@ void ABall::OnTouchEnd(ETouchIndex::Type FingerIndex, UPrimitiveComponent* Touch
 	{
 		GameModeInterface->SetTouchedBall(nullptr);
 	}
+}
+
+void ABall::ApplyBallSettings()
+{
+	if (GameInstanceInterface)
+	{
+		BallType = GameInstanceInterface->GetBallType();
+	}
+
+	if (const FBallMeshSettings* BallSettings = BallTypeToMeshSettings.Find(BallType))
+	{
+		if (BallSettings->Mesh)
+		{
+			BallMesh->SetStaticMesh(BallSettings->Mesh);
+			BallMesh->SetWorldScale3D(BallSettings->Scale);
+		}
+	}
+}
+
+void ABall::OnConstruction(const FTransform& Transform)
+{
+	Super::OnConstruction(Transform);
+
+	GameInstanceInterface = UFunctionsLibrary::GetGameInstanceInterface(GetWorld());
+	ApplyBallSettings();
+	UE_LOG(LogTemp, Warning, TEXT("ABall::OnConstruction called."));
 }
