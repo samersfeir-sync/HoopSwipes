@@ -46,4 +46,6 @@ public:
 
 	virtual FUserProgression GetUserProgression() const = 0;
 
+	virtual void UpdateShopItemsStruct() = 0;
+
 };

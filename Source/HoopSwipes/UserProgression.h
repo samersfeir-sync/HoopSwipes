@@ -11,6 +11,7 @@ struct FUserProgression
 {
     GENERATED_BODY()
 
+    UPROPERTY()
     TArray<EBallType> PurchasedBalls;
 
     UPROPERTY(EditDefaultsOnly)

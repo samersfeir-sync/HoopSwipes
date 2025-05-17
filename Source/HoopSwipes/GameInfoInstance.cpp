@@ -71,6 +71,7 @@ void UGameInfoInstance::LoadUserProgression()
 		if (SG_UserProgression)
 		{
 			UserProgression = SG_UserProgression->UserProgression;
+			UpdateShopItemsStruct();
 		}
 	}
 	else
@@ -83,6 +84,19 @@ void UGameInfoInstance::LoadUserProgression()
 FUserProgression UGameInfoInstance::GetUserProgression() const
 {
 	return UserProgression;
+}
+
+void UGameInfoInstance::UpdateShopItemsStruct()
+{
+	for (FBallsShopStruct& ShopItem : ShopItems)
+	{
+		int Index = UserProgression.PurchasedBalls.Find(ShopItem.BallType);
+
+		if (Index != INDEX_NONE)
+		{
+			ShopItem.IsPurchased = true;
+		}
+	}
 }
 
 FHighScoreData UGameInfoInstance::GetHighScoreStruct() const

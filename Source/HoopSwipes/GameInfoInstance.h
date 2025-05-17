@@ -43,6 +43,8 @@ public:
 
 	virtual FUserProgression GetUserProgression() const override;
 
+	virtual void UpdateShopItemsStruct() override;
+
 private:
 
 	virtual void Init() override;

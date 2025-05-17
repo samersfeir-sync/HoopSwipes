@@ -11,6 +11,7 @@ class UImage;
 class UTextBlock;
 class UButton;
 class IGameInstanceInterface;
+class UBorder;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnBallPurchased);
 
@@ -34,6 +35,8 @@ public:
 	void SetItemPrice(int Price);
 
 	FOnBallPurchased OnBallPurchased;
+
+	void UpdateBorderColor(FLinearColor NewColor);
 
 private:
 
@@ -59,4 +62,7 @@ private:
 	IGameInstanceInterface* GameInstanceInterface;
 
 	int ItemPrice;
+
+	UPROPERTY(meta = (BindWidget))
+	UBorder* MainBorder;
 };
