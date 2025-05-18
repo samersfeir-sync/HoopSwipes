@@ -20,8 +20,12 @@ ABasketballHoop::ABasketballHoop()
 	HoopMesh->SetMobility(EComponentMobility::Movable);
 	HoopMesh->SetNotifyRigidBodyCollision(true);
 
+	RingMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RingMesh"));
+	RingMesh->SetupAttachment(HoopMesh);
+	RingMesh->SetNotifyRigidBodyCollision(true);
+
 	ScoreCollision = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ScoreCollision"));
-	ScoreCollision->SetupAttachment(HoopMesh);
+	ScoreCollision->SetupAttachment(RingMesh);
 	ScoreCollision->SetCollisionProfileName(TEXT("OverlapAll"));
 	ScoreCollision->OnComponentBeginOverlap.AddDynamic(this, &ABasketballHoop::OnScoreOverlap);
 
@@ -52,9 +56,9 @@ void ABasketballHoop::BeginPlay()
 	
 	GameModeInterface = UFunctionsLibrary::GetGameModeInterface(GetWorld());
 
-	if (HoopMesh)
+	if (RingMesh)
 	{
-		HoopMesh->OnComponentHit.AddDynamic(this, &ABasketballHoop::OnHoopHit);
+		RingMesh->OnComponentHit.AddDynamic(this, &ABasketballHoop::OnRingHit);
 	}
 }
 
@@ -147,6 +151,7 @@ void ABasketballHoop::OnScoreOverlap(UPrimitiveComponent* OverlappedComponent, A
 							bool Swish = BallInterface->GetSwishBoolean();
 							GameModeInterface->UpdateScoreMultiplier(!Swish);
 							GameModeInterface->UpdateScore();
+							GameModeInterface->AddCoins();
 						}
 
 					}
@@ -158,7 +163,7 @@ void ABasketballHoop::OnScoreOverlap(UPrimitiveComponent* OverlappedComponent, A
 	}
 }
 
-void ABasketballHoop::OnHoopHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+void ABasketballHoop::OnRingHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	if (OtherActor)
 	{

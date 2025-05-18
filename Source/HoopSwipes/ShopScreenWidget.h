@@ -12,7 +12,7 @@ class UShopItemWidget;
 class UUniformGridPanel;
 class IGameInstanceInterface;
 struct FBallsShopStruct;
-class UTextBlock;
+class UTotalCoinsWidget;
 
 UCLASS()
 class HOOPSWIPES_API UShopScreenWidget : public UUserWidget
@@ -25,6 +25,8 @@ public:
 
 	void UpdateCoinsText();
 
+	TArray<UShopItemWidget*> ShopItemWidgets;
+
 private:
 
 	virtual void NativeConstruct() override;
@@ -32,11 +34,8 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	UUniformGridPanel* ItemContainer;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Shop")
+	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UShopItemWidget> ShopItemWidgetClass;
-
-	UPROPERTY(meta = (BindWidget))
-	UTextBlock* TotalCoins;
 
 	UFUNCTION()
 	void FillItemContainer();
@@ -45,6 +44,9 @@ public:
 
 	UPROPERTY(meta = (BindWidget))
 	UButton* BackButton;
+
+	UPROPERTY(meta = (BindWidget))
+	UTotalCoinsWidget* TotalCoinsWidget;
 
 	IGameInstanceInterface* GameInstanceInterface = nullptr;
 };

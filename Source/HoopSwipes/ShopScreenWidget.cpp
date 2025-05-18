@@ -9,21 +9,18 @@
 #include "GameInstanceInterface.h"
 #include "Components/Button.h"
 #include "FunctionsLibrary.h"
-#include "Components/TextBlock.h"
-
-void UShopScreenWidget::UpdateCoinsText()
-{
-    if (TotalCoins && GameInstanceInterface)
-    {
-        TotalCoins->SetText(FText::AsNumber(GameInstanceInterface->GetUserProgression().TotalCoins));
-    }
-}
+#include "TotalCoinsWidget.h"
 
 void UShopScreenWidget::NativeConstruct()
 {
     Super::NativeConstruct();
 
     GameInstanceInterface = UFunctionsLibrary::GetGameInstanceInterface(GetWorld());
+
+    if (GameInstanceInterface && TotalCoinsWidget)
+    {
+        TotalCoinsWidget->SetGameInstanceInterface(GameInstanceInterface);
+    }
 
     FillItemContainer();
 }
@@ -44,9 +41,12 @@ void UShopScreenWidget::FillItemContainer()
 
             if (NewItem)
             {
+                ShopItemWidgets.Add(NewItem);
+                NewItem->SetParentWidgetReference(this);
+
                 NewItem->OnBallPurchased.AddDynamic(this, &UShopScreenWidget::FillItemContainer);
                 NewItem->SetGameInstanceInterface(GameInstanceInterface);
-
+                
                 bool bIsPurchased = BallItem.IsPurchased;
                 NewItem->SetItemImage(BallItem.BallTexture);
                 NewItem->SetCoinImageVisibility(!bIsPurchased);
@@ -63,6 +63,9 @@ void UShopScreenWidget::FillItemContainer()
             }
         }
 
-        UpdateCoinsText();
+        if (TotalCoinsWidget)
+        {
+            TotalCoinsWidget->UpdateCoinsText();
+        }
     }
 }

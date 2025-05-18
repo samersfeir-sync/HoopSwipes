@@ -54,6 +54,7 @@ void AUnlimitedTimeGameMode::RestartGame()
 	Super::RestartGame();
 
 	ActivateNextBall(false);
+	LastMilestoneScore = 0;
 
 	if (BasketballHoop)
 	{
@@ -67,11 +68,14 @@ void AUnlimitedTimeGameMode::UpdateScore()
 {
 	Super::UpdateScore();
 
-	if (CurrentScore % 5 == 0)
+	if (CurrentScore / 5 > LastMilestoneScore / 5)
 	{
-		if (!BasketballHoop->IsMovementActive())	
-				BasketballHoop->ActivateMovement();
+		LastMilestoneScore = CurrentScore;
 
+		if (!BasketballHoop->IsMovementActive())
+		{
+			BasketballHoop->ActivateMovement();
+		}
 		else
 		{
 			BasketballHoop->IncreaseSpeed(10);

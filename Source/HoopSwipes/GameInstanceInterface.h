@@ -8,6 +8,7 @@
 #include "BallType.h"
 #include "BallsShopStruct.h"
 #include "UserProgression.h"
+#include "UserPreferences.h"
 #include "GameInstanceInterface.generated.h"
 
 // This class does not need to be modified.
@@ -44,8 +45,15 @@ public:
 
 	virtual void LoadUserProgression() = 0;
 
-	virtual FUserProgression GetUserProgression() const = 0;
+	virtual FUserProgression& GetUserProgression() = 0;
 
 	virtual void UpdateShopItemsStruct() = 0;
 
+	virtual void AssignOnBallSet(const FScriptDelegate& Delegate) = 0;
+
+	virtual void SaveUserPreferences(FUserPreferences NewUserPreferences) = 0;
+
+	virtual void LoadUserPreferences() = 0;
+
+	virtual FUserPreferences GetUserPreferences() const = 0;
 };

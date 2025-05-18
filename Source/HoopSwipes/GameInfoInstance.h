@@ -9,9 +9,12 @@
 #include "BallType.h"
 #include "BallsShopStruct.h"
 #include "UserProgression.h"
+#include "UserPreferences.h"
 #include "GameInfoInstance.generated.h"
 
 class UGameSave;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnBallTypeSet);
 
 UCLASS()
 class HOOPSWIPES_API UGameInfoInstance : public UGameInstance, public IGameInstanceInterface
@@ -41,9 +44,17 @@ public:
 
 	virtual void LoadUserProgression() override;
 
-	virtual FUserProgression GetUserProgression() const override;
+	virtual FUserProgression& GetUserProgression() override;
 
 	virtual void UpdateShopItemsStruct() override;
+
+	virtual void AssignOnBallSet(const FScriptDelegate& Delegate) override;
+
+	virtual void SaveUserPreferences(FUserPreferences NewUserPreferences) override;
+
+	virtual void LoadUserPreferences() override;
+
+	virtual FUserPreferences GetUserPreferences() const override;
 
 private:
 
@@ -59,6 +70,9 @@ private:
 	UPROPERTY()
 	UGameSave* SG_UserProgression = nullptr;
 
+	UPROPERTY()
+	UGameSave* SG_UserPreferences = nullptr;
+
 	FHighScoreData HighScores;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Ball")
@@ -66,4 +80,8 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "User Progression")
 	FUserProgression UserProgression;
+
+	FUserPreferences UserPreferences;
+
+	FOnBallTypeSet OnBallTypeSet;
 };

@@ -81,7 +81,41 @@ void UGameInfoInstance::LoadUserProgression()
 	}
 }
 
-FUserProgression UGameInfoInstance::GetUserProgression() const
+void UGameInfoInstance::SaveUserPreferences(FUserPreferences NewUserPreferences)
+{
+	if (SG_UserPreferences)
+	{
+		UserPreferences = NewUserPreferences;
+		SG_UserPreferences->UserPreferences = NewUserPreferences;
+		UGameplayStatics::SaveGameToSlot(SG_UserPreferences, "UserPreferencesSlot", 0);
+	}
+}
+
+void UGameInfoInstance::LoadUserPreferences()
+{
+	if (UGameplayStatics::DoesSaveGameExist(TEXT("UserPreferencesSlot"), 0))
+	{
+		SG_UserPreferences = Cast<UGameSave>(UGameplayStatics::LoadGameFromSlot(TEXT("UserPreferencesSlot"), 0));
+
+		if (SG_UserPreferences)
+		{
+			UserPreferences = SG_UserPreferences->UserPreferences;
+			BallType = UserPreferences.DesiredBall;
+		}
+	}
+	else
+	{
+		SG_UserPreferences = Cast<UGameSave>(
+			UGameplayStatics::CreateSaveGameObject(UGameSave::StaticClass()));
+	}
+}
+
+FUserPreferences UGameInfoInstance::GetUserPreferences() const
+{
+	return UserPreferences;
+}
+
+FUserProgression& UGameInfoInstance::GetUserProgression()
 {
 	return UserProgression;
 }
@@ -99,6 +133,11 @@ void UGameInfoInstance::UpdateShopItemsStruct()
 	}
 }
 
+void UGameInfoInstance::AssignOnBallSet(const FScriptDelegate& Delegate)
+{
+	OnBallTypeSet.Add(Delegate);
+}
+
 FHighScoreData UGameInfoInstance::GetHighScoreStruct() const
 {
 	return HighScores;
@@ -112,6 +151,9 @@ EBallType UGameInfoInstance::GetBallType() const
 void UGameInfoInstance::SetBallType(EBallType NewBallType)
 {
 	BallType = NewBallType;
+	UserPreferences.DesiredBall = NewBallType;
+	OnBallTypeSet.Broadcast();
+	SaveUserPreferences(UserPreferences);
 }
 
 TArray<FBallsShopStruct> UGameInfoInstance::GetShopStruct() const
@@ -125,6 +167,7 @@ void UGameInfoInstance::Init()
 	GetWorld()->GetTimerManager().SetTimer(ViewportSizeTimer, this, &UGameInfoInstance::FetchViewportSize, 1.0f, false);
 	LoadHighScore();
 	LoadUserProgression();
+	LoadUserPreferences();
 }
 
 void UGameInfoInstance::FetchViewportSize()

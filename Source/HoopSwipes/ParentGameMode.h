@@ -59,6 +59,8 @@ public:
 
 	virtual void UpdateScoreMultiplier(bool Reset) override;
 
+	virtual void AddCoins() override;
+
 protected:
 
 	virtual void BeginPlay() override;

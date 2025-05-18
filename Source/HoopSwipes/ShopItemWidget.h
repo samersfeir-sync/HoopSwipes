@@ -12,6 +12,7 @@ class UTextBlock;
 class UButton;
 class IGameInstanceInterface;
 class UBorder;
+class UShopScreenWidget;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnBallPurchased);
 
@@ -36,7 +37,10 @@ public:
 
 	FOnBallPurchased OnBallPurchased;
 
-	void UpdateBorderColor(FLinearColor NewColor);
+	UFUNCTION()
+	void UpdateBorderColor();
+
+	void SetParentWidgetReference(UShopScreenWidget* NewParentWidget);
 
 private:
 
@@ -65,4 +69,9 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	UBorder* MainBorder;
+
+	UShopScreenWidget* ParentWidget;
+
+	UPROPERTY(EditDefaultsOnly)
+	FLinearColor SelectedOutlineColor;
 };

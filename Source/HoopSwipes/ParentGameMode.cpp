@@ -13,6 +13,7 @@
 #include "BasketballPlayerController.h"
 #include "GamePlayWidget.h"
 #include "GameInstanceInterface.h"
+#include "TotalCoinsWidget.h"
 
 AParentGameMode::AParentGameMode()
 {
@@ -22,7 +23,7 @@ AParentGameMode::AParentGameMode()
 
 void AParentGameMode::UpdateScore()
 {
-	CurrentScore += 1 * ScoreMultiplier;
+	CurrentScore += ScoreMultiplier;
 
 	if (ScoreSound)
 	{
@@ -46,6 +47,7 @@ void AParentGameMode::RestartGame()
 	//shared functionality for all game modes, override the rest in each game mode child class
 
 	CurrentScore = 0;
+	UpdateScoreMultiplier(true);
 
 	if (GamePlayWidgetInstace)
 	{
@@ -141,6 +143,13 @@ void AParentGameMode::BeginPlay()
 		{
 			OriginalHoopTransform = BasketballHoop->GetActorTransform();
 		}
+
+		GameInstanceInterface = UFunctionsLibrary::GetGameInstanceInterface(World);
+
+		if (GameInstanceInterface)
+		{
+			HighScoresData = GameInstanceInterface->GetHighScoreStruct();
+		}
 		
 		if (GamePlayWidgetClass)
 		{
@@ -149,15 +158,9 @@ void AParentGameMode::BeginPlay()
 			if (GamePlayWidgetInstace)
 			{
 				GamePlayWidgetInstace->AddToViewport();
+				GamePlayWidgetInstace->TotalCoinsWidget->SetGameInstanceInterface(GameInstanceInterface);
 			}
 
-		}
-
-		GameInstanceInterface = UFunctionsLibrary::GetGameInstanceInterface(World);
-
-		if (GameInstanceInterface)
-		{
-			HighScoresData = GameInstanceInterface->GetHighScoreStruct();
 		}
 	}
 }
@@ -194,9 +197,20 @@ void AParentGameMode::EndGame()
 		HighScore = CurrentScore;
 		GameInstanceInterface->SaveHighScore(GameModeType, CurrentScore);
 	}
+
+	FUserProgression UserProgression = GameInstanceInterface->GetUserProgression();
+	GameInstanceInterface->SaveUserProgression(UserProgression);
 }
 
 void AParentGameMode::UpdateScoreMultiplier(bool Reset)
 {
-	ScoreMultiplier = Reset ? 1 : ScoreMultiplier * 2;
+	//ScoreMultiplier = Reset ? 1 : ScoreMultiplier * 2;
+	ScoreMultiplier = Reset ? 1 : 2;
+
+}
+
+void AParentGameMode::AddCoins()
+{
+	GameInstanceInterface->GetUserProgression().TotalCoins += ScoreMultiplier;
+	GamePlayWidgetInstace->TotalCoinsWidget->UpdateCoinsText();
 }

@@ -11,6 +11,7 @@ class UScoreWidget;
 class UHomeButtonWidget;
 class UHighScoreWidget;
 class UTargetScoreWidget;
+class UTotalCoinsWidget;
 
 UCLASS()
 class HOOPSWIPES_API UGamePlayWidget : public UUserWidget
@@ -26,6 +27,9 @@ public:
 	void UpdateHighScoreUI(int NewHighScore);
 	void UpdateTargetScoreUI(int NewTargetScore);
 	void ShowTargetScoreUI(bool Show);
+
+	UPROPERTY(meta = (BindWidget))
+	UTotalCoinsWidget* TotalCoinsWidget;
 
 private:
 

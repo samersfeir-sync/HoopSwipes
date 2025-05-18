@@ -9,6 +9,7 @@
 #include "GameInstanceInterface.h"
 #include "UserProgression.h"
 #include "Components/Border.h"
+#include "ShopScreenWidget.h"
 
 void UShopItemWidget::SetItemImage(UTexture2D* Image)
 {
@@ -54,14 +55,24 @@ void UShopItemWidget::SetItemPrice(int Price)
 	ItemPrice = Price;
 }
 
-void UShopItemWidget::UpdateBorderColor(FLinearColor NewColor)
+void UShopItemWidget::UpdateBorderColor()
 {
-	if (MainBorder)
+	const FLinearColor DefaultOutlineColor(0.38f, 0.15f, 0.0f, 1.0f);
+
+	EBallType SelectedBallType = GameInstanceInterface->GetBallType();
+
+	for (UShopItemWidget* ShopItem : ParentWidget->ShopItemWidgets)
 	{
-		FSlateBrush CurrentBrush = MainBorder->Background;
-		CurrentBrush.OutlineSettings.Color = NewColor;
-		MainBorder->SetBrush(CurrentBrush);
+		FLinearColor DesiredColor = (ShopItem->BallType == SelectedBallType) ? SelectedOutlineColor : DefaultOutlineColor;
+		FSlateBrush ShopItemBrush = ShopItem->MainBorder->Background;
+		ShopItemBrush.OutlineSettings.Color = DesiredColor;
+		ShopItem->MainBorder->SetBrush(ShopItemBrush);
 	}
+}
+
+void UShopItemWidget::SetParentWidgetReference(UShopScreenWidget* NewParentWidget)
+{
+	ParentWidget = NewParentWidget;
 }
 
 void UShopItemWidget::BuyButtonClicked()
@@ -94,4 +105,13 @@ void UShopItemWidget::NativeConstruct()
 	{
 		BuyButton->OnClicked.AddDynamic(this, &UShopItemWidget::BuyButtonClicked);
 	}
+
+	if (GameInstanceInterface)
+	{
+		FScriptDelegate Delegate;
+		Delegate.BindUFunction(this, FName("UpdateBorderColor"));
+		GameInstanceInterface->AssignOnBallSet(Delegate);
+	}
+
+	UpdateBorderColor();
 }

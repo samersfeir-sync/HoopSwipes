@@ -26,4 +26,5 @@ private:
 
 	virtual void UpdateScore() override;
 
+	int LastMilestoneScore = 0;
 };

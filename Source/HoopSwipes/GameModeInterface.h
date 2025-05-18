@@ -33,4 +33,5 @@ public:
 	virtual void AssignCameraFetchedDelegate(const FScriptDelegate& Delegate) = 0;
 	virtual EGameModeType GetGameModeType() const = 0;
 	virtual void UpdateScoreMultiplier(bool Reset) = 0;
+	virtual void AddCoins() = 0;
 };

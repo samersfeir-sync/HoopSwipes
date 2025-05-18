@@ -56,6 +56,9 @@ private:
 	UStaticMeshComponent* HoopMesh;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
+	UStaticMeshComponent* RingMesh;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Components")
 	UStaticMeshComponent* ScoreCollision;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
@@ -75,7 +78,7 @@ private:
 	IGameModeInterface* GameModeInterface = nullptr;
 
 	UFUNCTION()
-	void OnHoopHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
+	void OnRingHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 	UPROPERTY(EditDefaultsOnly, Category = "Parameters")
