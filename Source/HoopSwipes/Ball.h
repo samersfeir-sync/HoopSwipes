@@ -85,6 +85,8 @@ public:
 
 	FOnBallLaunched OnBallLaunched;
 
+	const FBallMeshSettings* BallSettings;
+
 private:
 
 	bool bScored = false;
@@ -113,7 +115,5 @@ private:
 	void ApplyBallSettings();
 
 	IGameInstanceInterface* GameInstanceInterface = nullptr;
-
-	virtual void OnConstruction(const FTransform& Transform) override;
 
 };

@@ -111,4 +111,5 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Audio")
 	USoundBase* ScoreSound;
 
+	int CollectedCoins = 0;
 };

@@ -47,6 +47,7 @@ void ABall::BeginPlay()
 	{
 		GameModeInterface = UFunctionsLibrary::GetGameModeInterface(World);
 		PlayerController = UFunctionsLibrary::GetPlayerController(World);
+		GameInstanceInterface = UFunctionsLibrary::GetGameInstanceInterface(World);
 	}
 
 	if (GameModeInterface)
@@ -59,9 +60,11 @@ void ABall::BeginPlay()
 	
 	if (BallMesh)
 	{
+		ApplyBallSettings();
 		BallMesh->OnInputTouchBegin.AddDynamic(this, &ABall::OnTouchBegin);
 		BallMesh->OnInputTouchEnd.AddDynamic(this, &ABall::OnTouchEnd);
 	}
+
 }
 
 // Called every frame
@@ -125,23 +128,16 @@ void ABall::ApplyBallSettings()
 	if (GameInstanceInterface)
 	{
 		BallType = GameInstanceInterface->GetBallType();
-	}
 
-	if (const FBallMeshSettings* BallSettings = BallTypeToMeshSettings.Find(BallType))
-	{
-		if (BallSettings->Mesh)
+		BallSettings = BallTypeToMeshSettings.Find(BallType);
+
+		if (BallSettings)
 		{
-			BallMesh->SetStaticMesh(BallSettings->Mesh);
-			BallMesh->SetWorldScale3D(BallSettings->Scale);
+			if (BallSettings->Mesh)
+			{
+				BallMesh->SetStaticMesh(BallSettings->Mesh);
+				BallMesh->SetWorldScale3D(BallSettings->Scale);
+			}
 		}
 	}
-}
-
-void ABall::OnConstruction(const FTransform& Transform)
-{
-	Super::OnConstruction(Transform);
-
-	GameInstanceInterface = UFunctionsLibrary::GetGameInstanceInterface(GetWorld());
-	ApplyBallSettings();
-	UE_LOG(LogTemp, Warning, TEXT("ABall::OnConstruction called."));
 }

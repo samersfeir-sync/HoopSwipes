@@ -16,7 +16,7 @@ class HOOPSWIPES_API UTotalCoinsWidget : public UUserWidget
 	
 public:
 
-	void UpdateCoinsText();
+	void UpdateCoinsText(int CoinsAmount);
 
 	void SetGameInstanceInterface(IGameInstanceInterface* NewGameInstanceInterface);
 

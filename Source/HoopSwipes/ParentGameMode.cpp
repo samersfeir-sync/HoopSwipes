@@ -14,6 +14,7 @@
 #include "GamePlayWidget.h"
 #include "GameInstanceInterface.h"
 #include "TotalCoinsWidget.h"
+#include "Engine/TargetPoint.h"
 
 AParentGameMode::AParentGameMode()
 {
@@ -48,6 +49,7 @@ void AParentGameMode::RestartGame()
 
 	CurrentScore = 0;
 	UpdateScoreMultiplier(true);
+	CollectedCoins = 0;
 
 	if (GamePlayWidgetInstace)
 	{
@@ -117,15 +119,21 @@ void AParentGameMode::BeginPlay()
 		}
 
 		PoolManager = Cast<APoolManager>(UGameplayStatics::GetActorOfClass(World, APoolManager::StaticClass()));
-		ABall* DefaultBall = Cast<ABall>(UGameplayStatics::GetActorOfClass(World, ABall::StaticClass()));
+		ATargetPoint* BallTargetPoint = Cast<ATargetPoint>(UGameplayStatics::GetActorOfClass(World, ATargetPoint::StaticClass()));
 
-		if (DefaultBall)
+		if (BallTargetPoint)
 		{
-			OriginalBallTransform = DefaultBall->GetActorTransform();
-
 			if (PoolManager)
 			{
-				PoolManager->AddBallToArray(DefaultBall);
+				FTransform TargetPointTransform = BallTargetPoint->GetActorTransform();
+				ABall* DefaultBall = PoolManager->GetBallFromPool(TargetPointTransform);
+
+				if (DefaultBall)
+				{
+					OriginalBallTransform.SetLocation(TargetPointTransform.GetLocation());
+					OriginalBallTransform.SetRotation(TargetPointTransform.GetRotation());
+					OriginalBallTransform.SetScale3D(DefaultBall->BallSettings->Scale);
+				}
 			}
 		}
 
@@ -199,6 +207,7 @@ void AParentGameMode::EndGame()
 	}
 
 	FUserProgression UserProgression = GameInstanceInterface->GetUserProgression();
+	UserProgression.TotalCoins += CollectedCoins;
 	GameInstanceInterface->SaveUserProgression(UserProgression);
 }
 
@@ -211,6 +220,7 @@ void AParentGameMode::UpdateScoreMultiplier(bool Reset)
 
 void AParentGameMode::AddCoins()
 {
-	GameInstanceInterface->GetUserProgression().TotalCoins += ScoreMultiplier;
-	GamePlayWidgetInstace->TotalCoinsWidget->UpdateCoinsText();
+	CollectedCoins += ScoreMultiplier;
+	int CoinsToDisplay = GameInstanceInterface->GetUserProgression().TotalCoins + CollectedCoins;
+	GamePlayWidgetInstace->TotalCoinsWidget->UpdateCoinsText(CoinsToDisplay);
 }

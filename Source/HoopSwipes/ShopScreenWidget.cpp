@@ -65,7 +65,7 @@ void UShopScreenWidget::FillItemContainer()
 
         if (TotalCoinsWidget)
         {
-            TotalCoinsWidget->UpdateCoinsText();
+            TotalCoinsWidget->UpdateCoinsText(GameInstanceInterface->GetUserProgression().TotalCoins);
         }
     }
 }

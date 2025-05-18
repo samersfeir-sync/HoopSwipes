@@ -5,11 +5,11 @@
 #include "Components/TextBlock.h"
 #include "GameInstanceInterface.h"
 
-void UTotalCoinsWidget::UpdateCoinsText()
+void UTotalCoinsWidget::UpdateCoinsText(int CoinsAmount)
 {
     if (TotalCoins && GameInstanceInterface)
     {
-        TotalCoins->SetText(FText::AsNumber(GameInstanceInterface->GetUserProgression().TotalCoins));
+        TotalCoins->SetText(FText::AsNumber(CoinsAmount));
     }
 }
 
@@ -17,5 +17,5 @@ void UTotalCoinsWidget::SetGameInstanceInterface(IGameInstanceInterface* NewGame
 {
     GameInstanceInterface = NewGameInstanceInterface;
 
-    UpdateCoinsText();
+    UpdateCoinsText(GameInstanceInterface->GetUserProgression().TotalCoins);
 }
