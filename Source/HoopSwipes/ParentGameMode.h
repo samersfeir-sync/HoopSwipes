@@ -100,6 +100,16 @@ protected:
 
 	FTransform OriginalHoopTransform = FTransform::Identity;
 
+	virtual void AddActiveBall(ABall* ActiveBall) override
+	{
+		//override in timed game mode 
+	}
+
+	virtual void RemoveActiveBall(ABall* ActiveBall) override
+	{
+		//override in timed game mode 
+	}
+
 private:
 
 	ACameraActor* Camera = nullptr;

@@ -8,6 +8,31 @@
 #include "Components/WidgetComponent.h"
 #include "TimerWidget.h"
 
+void ATimedGameMode::AddActiveBall(ABall* ActiveBall)
+{
+	ActiveBalls.AddUnique(ActiveBall);
+}
+
+void ATimedGameMode::RemoveActiveBall(ABall* ActiveBall)
+{
+	if (ActiveBalls.Contains(ActiveBall))
+	{
+		ActiveBalls.Remove(ActiveBall);
+	}
+
+	if (bWaitingForBalls && ActiveBalls.IsEmpty())
+	{
+		if (IsTargetScoreReached(TempScoreTarget))
+		{
+			World->GetTimerManager().UnPauseTimer(TimerHandle);
+			PlayerController->bEnableTouchEvents = true;
+			bWaitingForBalls = false;
+		}
+		else 
+			EndGame();
+	}
+}
+
 ATimedGameMode::ATimedGameMode()
 {
 	GameModeType = EGameModeType::Timed;
@@ -52,6 +77,9 @@ void ATimedGameMode::RestartGame()
 {
 	Super::RestartGame();
 
+	bWaitingForBalls = false;
+	ActiveBalls.Empty();
+	TempScoreTarget = 0;
 	ScoreTarget = 10;
 	TotalSeconds = 20;
 	TargetMultiplier = 2;
@@ -68,8 +96,19 @@ void ATimedGameMode::ReduceGameTime()
 
 	if (TotalSeconds <= 0)
 	{
-		World->GetTimerManager().ClearTimer(TimerHandle);
-		EndGame();
+		World->GetTimerManager().PauseTimer(TimerHandle);
+		PlayerController->bEnableTouchEvents = false;
+
+		if (ActiveBalls.Num() == 0)
+		{
+			EndGame();
+		}
+
+		else
+		{
+			bWaitingForBalls = true;
+			TempScoreTarget = ScoreTarget;
+		}
 	}
 }
 
@@ -77,23 +116,24 @@ void ATimedGameMode::EndGame()
 {
 	Super::EndGame();
 
-	PlayerController->bEnableTouchEvents = false;
-
+	World->GetTimerManager().ClearTimer(TimerHandle);
 }
 
 void ATimedGameMode::UpdateScore()
 {
 	Super::UpdateScore();
 
-	if (TotalSeconds > 0)
+	if (IsTargetScoreReached(ScoreTarget))
 	{
-		if (CurrentScore >= ScoreTarget)
-		{
-			ScoreTarget = ScoreTarget + (10 * TargetMultiplier);
-			TargetMultiplier++;
-			GamePlayWidgetInstace->UpdateTargetScoreUI(ScoreTarget);
-			TotalSeconds += 15;
-			TimerWidget->UpdateTime(TotalSeconds);
-		}
+		ScoreTarget = ScoreTarget + (10 * TargetMultiplier);
+		TargetMultiplier++;
+		GamePlayWidgetInstace->UpdateTargetScoreUI(ScoreTarget);
+		TotalSeconds += 15;
+		TimerWidget->UpdateTime(TotalSeconds);
 	}
+}
+
+bool ATimedGameMode::IsTargetScoreReached(int TargetScore) const
+{
+	return CurrentScore >= TargetScore;
 }

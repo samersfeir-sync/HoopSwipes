@@ -34,4 +34,6 @@ public:
 	virtual EGameModeType GetGameModeType() const = 0;
 	virtual void UpdateScoreMultiplier(bool Reset) = 0;
 	virtual void AddCoins() = 0;
+	virtual void AddActiveBall(ABall* ActiveBall) = 0;
+	virtual void RemoveActiveBall(ABall* ActiveBall) = 0;
 };

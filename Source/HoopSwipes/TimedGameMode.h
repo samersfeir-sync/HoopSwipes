@@ -13,6 +13,12 @@ class HOOPSWIPES_API ATimedGameMode : public AParentGameMode
 {
 	GENERATED_BODY()
 	
+public:
+
+	void AddActiveBall(ABall* ActiveBall) override;
+
+	void RemoveActiveBall(ABall* ActiveBall) override;
+
 private:
 
 	ATimedGameMode();
@@ -38,4 +44,12 @@ private:
 	virtual void UpdateScore() override;
 
 	float TargetMultiplier = 2;
+
+	TArray<ABall*> ActiveBalls;
+
+	bool bWaitingForBalls = false;
+
+	bool IsTargetScoreReached(int TargetScore) const;
+
+	int TempScoreTarget = 0;
 };

@@ -34,6 +34,11 @@ void ABall::DeactivateBall()
 	SetActorHiddenInGame(true);
 	bLaunched = false;
 	bSwish = true;
+
+	if (GameModeInterface)
+	{
+		GameModeInterface->RemoveActiveBall(this);
+	}
 }
 
 // Called when the game starts or when spawned
@@ -92,6 +97,11 @@ void ABall::LaunchBall(FVector2D TouchEndLocation)
 
 	bLaunched = true;
 	OnBallLaunched.Broadcast(false);
+
+	if (GameModeInterface)
+	{
+		GameModeInterface->AddActiveBall(this);
+	}
 }
 
 void ABall::OnTouchBegin(ETouchIndex::Type FingerIndex, UPrimitiveComponent* TouchedComponent)
