@@ -8,6 +8,7 @@
 #include "GamePlayWidget.h"
 #include "Ground.h"
 #include "Kismet/GameplayStatics.h"
+#include "Interface/AGRewardedAdInterface.h"
 
 AUnlimitedTimeGameMode::AUnlimitedTimeGameMode()
 {
@@ -31,7 +32,7 @@ void AUnlimitedTimeGameMode::BeginPlay()
 	}
 
 	HighScore = HighScoresData.UnlimitedTimeScore;
-	GamePlayWidgetInstace->UpdateHighScoreUI(HighScore);
+	GamePlayWidgetInstance->UpdateHighScoreUI(HighScore);
 }
 
 void AUnlimitedTimeGameMode::OnTriggerOverlap(AActor* OverlappedActor, AActor* OtherActor)
@@ -40,9 +41,18 @@ void AUnlimitedTimeGameMode::OnTriggerOverlap(AActor* OverlappedActor, AActor* O
 
 	if (BallInterface)
 	{
-		if(!BallInterface->GetScoredBoolean())
+		if (!BallInterface->GetScoredBoolean())
 		{
-			EndGame();
+			if (bCanWatchAd)
+			{
+				bCanWatchAd = false;
+				ShowSecondChanceWidget();
+			}
+
+			else
+			{
+				EndGame();
+			}
 		}
 
 		BallInterface->SetScoredBoolean(false);
@@ -81,4 +91,11 @@ void AUnlimitedTimeGameMode::UpdateScore()
 			BasketballHoop->IncreaseSpeed(10);
 		}
 	}
+}
+
+void AUnlimitedTimeGameMode::GrantSecondChance(FRewardItem Reward)
+{
+	Super::GrantSecondChance(Reward);
+	
+	ActivateNextBall(true);
 }

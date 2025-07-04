@@ -6,6 +6,10 @@
 #include "ScoreWidget.h"
 #include "HighScoreWidget.h"
 #include "TargetScoreWidget.h"
+#include "SecondChanceWidget.h"
+#include "Components/Button.h"
+#include "Kismet/GameplayStatics.h"
+#include "Components/SizeBox.h"
 
 void UGamePlayWidget::ShowRestartButton(bool bShow)
 {
@@ -53,4 +57,41 @@ void UGamePlayWidget::ShowTargetScoreUI(bool Show)
 	ESlateVisibility NewVisibility = Show ? ESlateVisibility::HitTestInvisible : ESlateVisibility::Hidden;
 
 	TargetScoreWidget->SetVisibility(NewVisibility);
+}
+
+void UGamePlayWidget::ShowSecondChanceWidget(bool bShow)
+{
+	ESlateVisibility SecondChanceWidgetVisibility = bShow ? ESlateVisibility::Visible : ESlateVisibility::Hidden;
+
+	SecondChanceWidget->SetVisibility(SecondChanceWidgetVisibility);
+
+	if (!bShow)
+	{
+		SecondChanceWidget->ResetWidget();
+		return;
+	}
+
+	SecondChanceWidget->StartSkipTimer();
+}
+
+void UGamePlayWidget::NativeConstruct()
+{
+	Super::NativeConstruct();
+
+	PauseButton->OnClicked.AddDynamic(this, &UGamePlayWidget::PauseButtonClicked);
+	ResumeButton->OnClicked.AddDynamic(this, &UGamePlayWidget::ResumeButtonClicked);
+}
+
+void UGamePlayWidget::PauseButtonClicked()
+{
+	UGameplayStatics::SetGamePaused(this, true);
+	ResumeButtonSizeBox->SetVisibility(ESlateVisibility::Visible);
+	PauseButton->SetIsEnabled(false);
+}
+
+void UGamePlayWidget::ResumeButtonClicked()
+{
+	UGameplayStatics::SetGamePaused(this, false);
+	ResumeButtonSizeBox->SetVisibility(ESlateVisibility::Hidden);
+	PauseButton->SetIsEnabled(true);
 }

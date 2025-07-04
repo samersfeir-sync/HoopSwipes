@@ -7,6 +7,7 @@
 #include "BasketballHoop.h"
 #include "Components/WidgetComponent.h"
 #include "TimerWidget.h"
+#include "Interface/AGRewardedAdInterface.h"
 
 void ATimedGameMode::AddActiveBall(ABall* ActiveBall)
 {
@@ -58,8 +59,8 @@ void ATimedGameMode::BeginPlay()
 	}
 
 	HighScore = HighScoresData.LimitedTimeScore;
-	GamePlayWidgetInstace->UpdateHighScoreUI(HighScore);
-	GamePlayWidgetInstace->ShowTargetScoreUI(true);
+	GamePlayWidgetInstance->UpdateHighScoreUI(HighScore);
+	GamePlayWidgetInstance->ShowTargetScoreUI(true);
 }
 
 void ATimedGameMode::OnTriggerOverlap(AActor* OverlappedActor, AActor* OtherActor)
@@ -83,7 +84,7 @@ void ATimedGameMode::RestartGame()
 	ScoreTarget = 10;
 	TotalSeconds = 20;
 	TargetMultiplier = 2;
-	GamePlayWidgetInstace->UpdateTargetScoreUI(ScoreTarget);
+	GamePlayWidgetInstance->UpdateTargetScoreUI(ScoreTarget);
 	TimerWidget->UpdateTime(TotalSeconds);
 	PlayerController->bEnableTouchEvents = true;
 	World->GetTimerManager().SetTimer(TimerHandle, this, &ATimedGameMode::ReduceGameTime, 1.0f, true);
@@ -101,7 +102,16 @@ void ATimedGameMode::ReduceGameTime()
 
 		if (ActiveBalls.Num() == 0)
 		{
-			EndGame();
+			if (bCanWatchAd)
+			{
+				bCanWatchAd = false;
+				ShowSecondChanceWidget();
+			}
+
+			else
+			{
+				EndGame();
+			}
 		}
 
 		else
@@ -127,7 +137,7 @@ void ATimedGameMode::UpdateScore()
 	{
 		ScoreTarget = ScoreTarget + (10 * TargetMultiplier);
 		TargetMultiplier++;
-		GamePlayWidgetInstace->UpdateTargetScoreUI(ScoreTarget);
+		GamePlayWidgetInstance->UpdateTargetScoreUI(ScoreTarget);
 		TotalSeconds += 15;
 		TimerWidget->UpdateTime(TotalSeconds);
 	}
@@ -136,4 +146,13 @@ void ATimedGameMode::UpdateScore()
 bool ATimedGameMode::IsTargetScoreReached(int TargetScore) const
 {
 	return CurrentScore >= TargetScore;
+}
+
+void ATimedGameMode::GrantSecondChance(FRewardItem Reward)
+{
+	Super::GrantSecondChance(Reward);
+
+	PlayerController->bEnableTouchEvents = true;
+	TotalSeconds = 15;
+	World->GetTimerManager().UnPauseTimer(TimerHandle);	
 }

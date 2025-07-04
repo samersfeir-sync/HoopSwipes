@@ -36,4 +36,6 @@ public:
 	virtual void AddCoins() = 0;
 	virtual void AddActiveBall(ABall* ActiveBall) = 0;
 	virtual void RemoveActiveBall(ABall* ActiveBall) = 0;
+	virtual void LoadRewardedAd() = 0;
+	virtual void EndGame() = 0;
 };

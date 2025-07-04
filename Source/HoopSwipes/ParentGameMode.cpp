@@ -15,6 +15,9 @@
 #include "GameInstanceInterface.h"
 #include "TotalCoinsWidget.h"
 #include "Engine/TargetPoint.h"
+#include "Interface/AGRewardedAdInterface.h"
+#include "Ads/AGAdLibrary.h"
+#include "SecondChanceWidget.h"
 
 AParentGameMode::AParentGameMode()
 {
@@ -31,13 +34,13 @@ void AParentGameMode::UpdateScore()
 		UGameplayStatics::PlaySound2D(this, ScoreSound);
 	}
 
-	if (GamePlayWidgetInstace)
+	if (GamePlayWidgetInstance)
 	{
-		GamePlayWidgetInstace->UpdateScoreUI(CurrentScore);
+		GamePlayWidgetInstance->UpdateScoreUI(CurrentScore);
 
 		if (CurrentScore > HighScore)
 		{
-			GamePlayWidgetInstace->UpdateHighScoreUI(CurrentScore);
+			GamePlayWidgetInstance->UpdateHighScoreUI(CurrentScore);
 		}
 
 	}
@@ -50,12 +53,13 @@ void AParentGameMode::RestartGame()
 	CurrentScore = 0;
 	UpdateScoreMultiplier(true);
 	CollectedCoins = 0;
+	bCanWatchAd = true;
 
-	if (GamePlayWidgetInstace)
+	if (GamePlayWidgetInstance)
 	{
-		GamePlayWidgetInstace->ShowRestartButton(false);
-		//GamePlayWidgetInstace->ShowScoreWidget(true);
-		GamePlayWidgetInstace->UpdateScoreUI(CurrentScore);
+		GamePlayWidgetInstance->ShowRestartButton(false);
+		//GamePlayWidgetInstance->ShowScoreWidget(true);
+		GamePlayWidgetInstance->UpdateScoreUI(CurrentScore);
 	}
 }
 
@@ -161,12 +165,13 @@ void AParentGameMode::BeginPlay()
 		
 		if (GamePlayWidgetClass)
 		{
-			GamePlayWidgetInstace = CreateWidget<UGamePlayWidget>(World, GamePlayWidgetClass);
+			GamePlayWidgetInstance = CreateWidget<UGamePlayWidget>(World, GamePlayWidgetClass);
 
-			if (GamePlayWidgetInstace)
+			if (GamePlayWidgetInstance)
 			{
-				GamePlayWidgetInstace->AddToViewport();
-				GamePlayWidgetInstace->TotalCoinsWidget->SetGameInstanceInterface(GameInstanceInterface);
+				GamePlayWidgetInstance->AddToViewport();
+				GamePlayWidgetInstance->TotalCoinsWidget->SetGameInstanceInterface(GameInstanceInterface);
+				SecondChanceWidgetInstance = GamePlayWidgetInstance->SecondChanceWidget;
 			}
 
 		}
@@ -192,12 +197,49 @@ void AParentGameMode::OnTriggerOverlap(AActor* OverlappedActor, AActor* OtherAct
 	}
 }
 
+void AParentGameMode::ShowRewardedAdIfAvailable()
+{
+	FOnRewardedAdUserEarhedRewardDelegate Delegate;
+	Delegate.BindDynamic(this, &AParentGameMode::GrantSecondChance);
+	RewardedAdInterface->BindEventToOnUserEarnedReward(Delegate);
+	RewardedAdInterface->Show();
+	GamePlayWidgetInstance->ShowSecondChanceWidget(false);
+}
+
+void AParentGameMode::GrantSecondChance(FRewardItem Reward)
+{
+	//override in child game mode class
+}
+
+void AParentGameMode::LoadRewardedAd()
+{
+	RewardedAdInterface = UAGAdLibrary::MakeRewardedAd(
+		GameInstanceInterface->GetRewardedAdUnitID());
+
+	if (RewardedAdInterface)
+	{
+		RewardedAdInterface->LoadAd();
+
+		FOnRewardedAdLoadedDelegate Delegate;
+		Delegate.BindDynamic(this, &AParentGameMode::ShowRewardedAdIfAvailable);
+		RewardedAdInterface->BindEventToOnAdLoaded(Delegate);
+
+		FOnRewardedAdFailedToLoadDelegate FailedToLoadDelegate;
+		FailedToLoadDelegate.BindDynamic(SecondChanceWidgetInstance, &USecondChanceWidget::RewardAdFailed);
+		RewardedAdInterface->BindEventToOnAdFailedToLoad(FailedToLoadDelegate);
+
+		FOnRewardedAdFailedToShowDelegate FailedToShowDelegate;
+		FailedToShowDelegate.BindDynamic(SecondChanceWidgetInstance, &USecondChanceWidget::RewardAdFailed);
+		RewardedAdInterface->BindEventToOnAdFailedToShow(FailedToShowDelegate);
+	}
+}
+
 void AParentGameMode::EndGame()
 {
-	if (GamePlayWidgetInstace)
+	if (GamePlayWidgetInstance)
 	{
-		GamePlayWidgetInstace->ShowRestartButton(true);
-		//GamePlayWidgetInstace->ShowScoreWidget(false);
+		GamePlayWidgetInstance->ShowRestartButton(true);
+		//GamePlayWidgetInstance->ShowScoreWidget(false);
 	}
 
 	if (CurrentScore > HighScore)
@@ -222,5 +264,13 @@ void AParentGameMode::AddCoins()
 {
 	CollectedCoins += ScoreMultiplier;
 	int CoinsToDisplay = GameInstanceInterface->GetUserProgression().TotalCoins + CollectedCoins;
-	GamePlayWidgetInstace->TotalCoinsWidget->UpdateCoinsText(CoinsToDisplay);
+	GamePlayWidgetInstance->TotalCoinsWidget->UpdateCoinsText(CoinsToDisplay);
+}
+
+void AParentGameMode::ShowSecondChanceWidget()
+{
+	if (SecondChanceWidgetInstance)
+	{
+		GamePlayWidgetInstance->ShowSecondChanceWidget(true);
+	}
 }

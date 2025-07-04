@@ -56,6 +56,10 @@ public:
 
 	virtual FUserPreferences GetUserPreferences() const override;
 
+	virtual FString GetBannerAdUnitID() const override { return BannerADUnitID; }
+	virtual FString GetInterstitialAdUnitID() const override { return InterstitialADUnitID; }
+	virtual FString GetRewardedAdUnitID() const override { return RewardedADUnitID; }
+
 private:
 
 	virtual void Init() override;
@@ -84,4 +88,10 @@ private:
 	FUserPreferences UserPreferences;
 
 	FOnBallTypeSet OnBallTypeSet;
+
+	void InitializeADUnits();
+
+	FString BannerADUnitID;
+	FString InterstitialADUnitID;
+	FString RewardedADUnitID;
 };

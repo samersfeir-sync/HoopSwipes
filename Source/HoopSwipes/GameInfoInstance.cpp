@@ -163,8 +163,9 @@ TArray<FBallsShopStruct> UGameInfoInstance::GetShopStruct() const
 
 void UGameInfoInstance::Init()
 {
+	InitializeADUnits();
 	FTimerHandle ViewportSizeTimer;
-	GetWorld()->GetTimerManager().SetTimer(ViewportSizeTimer, this, &UGameInfoInstance::FetchViewportSize, 1.0f, false);
+	GetWorld()->GetTimerManager().SetTimer(ViewportSizeTimer, this, &UGameInfoInstance::FetchViewportSize, 0.1f, false);
 	LoadHighScore();
 	LoadUserProgression();
 	LoadUserPreferences();
@@ -176,4 +177,19 @@ void UGameInfoInstance::FetchViewportSize()
 	{
 		GEngine->GameViewport->GetViewportSize(ViewportSize);
 	}
+}
+
+void UGameInfoInstance::InitializeADUnits()
+{
+#if PLATFORM_ANDROID
+	BannerADUnitID = TEXT("ca-app-pub-5279001044325653/5632528607");
+	InterstitialADUnitID = TEXT("ca-app-pub-5279001044325653/9080819028");
+	RewardedADUnitID = TEXT("ca-app-pub-5279001044325653/6337421401");
+
+#elif PLATFORM_IOS
+	BannerADUnitID = TEXT("");
+	InterstitialADUnitID = TEXT("");
+	RewardedADUnitID = TEXT("");
+
+#endif
 }

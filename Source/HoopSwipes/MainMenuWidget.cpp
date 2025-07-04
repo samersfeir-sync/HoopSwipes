@@ -76,6 +76,7 @@ void UMainMenuWidget::UnlimitedTimeButtonClicked()
 {
 	if (World)
 	{
+		OnGameStarted.Broadcast();
 		UGameplayStatics::OpenLevel(World, "UnlimitedTimeMap");
 	}
 }
@@ -84,6 +85,7 @@ void UMainMenuWidget::LimitedTimeButtonClicked()
 {
 	if (World)
 	{
+		OnGameStarted.Broadcast();
 		UGameplayStatics::OpenLevel(World, "LimitedTimeMap");
 	}
 }

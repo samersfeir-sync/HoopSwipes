@@ -11,11 +11,18 @@ class UTextBlock;
 class UShopScreenWidget;
 class UCanvasPanel;
 
+
+DECLARE_MULTICAST_DELEGATE(FOnGameStartedDelegate);
+
 UCLASS()
 class HOOPSWIPES_API UMainMenuWidget : public UUserWidget
 {
 	GENERATED_BODY()
 	
+public:
+
+	FOnGameStartedDelegate OnGameStarted;
+
 private:
 
 	UPROPERTY(meta = (BindWidget))

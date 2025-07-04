@@ -56,4 +56,9 @@ public:
 	virtual void LoadUserPreferences() = 0;
 
 	virtual FUserPreferences GetUserPreferences() const = 0;
+
+	virtual FString GetBannerAdUnitID() const = 0;
+	virtual FString GetInterstitialAdUnitID() const = 0;
+	virtual FString GetRewardedAdUnitID() const = 0;
+
 };

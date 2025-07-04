@@ -52,4 +52,6 @@ private:
 	bool IsTargetScoreReached(int TargetScore) const;
 
 	int TempScoreTarget = 0;
+
+	virtual void GrantSecondChance(FRewardItem Reward) override;
 };

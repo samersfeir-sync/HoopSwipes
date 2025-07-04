@@ -16,6 +16,8 @@ class IBallInterface;
 class UGamePlayWidget;
 class ACameraActor;
 class IGameInstanceInterface;
+class IAGRewardedAdInterface;
+class USecondChanceWidget;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCameraFetched);
 
@@ -55,11 +57,13 @@ public:
 	virtual void ActivateNextBall(bool RandomLocation) override;
 
 	UFUNCTION()
-	virtual void EndGame();
+	virtual void EndGame() override;
 
 	virtual void UpdateScoreMultiplier(bool Reset) override;
 
 	virtual void AddCoins() override;
+
+	virtual void LoadRewardedAd() override;
 
 protected:
 
@@ -86,7 +90,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Widget")
 	TSubclassOf<UGamePlayWidget> GamePlayWidgetClass;
 
-	UGamePlayWidget* GamePlayWidgetInstace = nullptr;
+	UGamePlayWidget* GamePlayWidgetInstance = nullptr;
 
 	EGameModeType GameModeType;
 
@@ -110,6 +114,13 @@ protected:
 		//override in timed game mode 
 	}
 
+	UFUNCTION()
+	virtual void GrantSecondChance(FRewardItem Reward);
+
+	bool bCanWatchAd = true;
+
+	void ShowSecondChanceWidget();
+
 private:
 
 	ACameraActor* Camera = nullptr;
@@ -122,4 +133,12 @@ private:
 	USoundBase* ScoreSound;
 
 	int CollectedCoins = 0;
+
+	UPROPERTY()
+	USecondChanceWidget* SecondChanceWidgetInstance;
+
+	TScriptInterface< IAGRewardedAdInterface> RewardedAdInterface;
+
+	UFUNCTION()
+	void ShowRewardedAdIfAvailable();
 };

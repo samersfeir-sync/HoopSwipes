@@ -12,6 +12,9 @@ class UHomeButtonWidget;
 class UHighScoreWidget;
 class UTargetScoreWidget;
 class UTotalCoinsWidget;
+class USecondChanceWidget;
+class UButton;
+class USizeBox;
 
 UCLASS()
 class HOOPSWIPES_API UGamePlayWidget : public UUserWidget
@@ -31,7 +34,17 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	UTotalCoinsWidget* TotalCoinsWidget;
 
+	UPROPERTY(meta = (BindWidget))
+	USecondChanceWidget* SecondChanceWidget;
+
+	void ShowSecondChanceWidget(bool bShow);
+
+	UFUNCTION()
+	void PauseButtonClicked();
+
 private:
+
+	virtual void NativeConstruct() override;
 
 	UPROPERTY(meta = (BindWidget))
 	URestartButtonWidget* RestartButtonWidget;
@@ -47,4 +60,19 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	UTargetScoreWidget* TargetScoreWidget;
+
+	UPROPERTY(meta = (BindWidget))
+	USizeBox* PauseButtonSizeBox;
+
+	UPROPERTY(meta = (BindWidget))
+	USizeBox* ResumeButtonSizeBox;
+
+	UPROPERTY(meta = (BindWidget))
+	UButton* PauseButton;
+
+	UPROPERTY(meta = (BindWidget))
+	UButton* ResumeButton;
+
+	UFUNCTION()
+	void ResumeButtonClicked();
 };
