@@ -18,7 +18,7 @@ ABall::ABall()
 	BallMesh->SetSimulatePhysics(true);
 	BallMesh->SetNotifyRigidBodyCollision(true);
 	BallMesh->SetCollisionProfileName(TEXT("PhysicsActor"));
-	BallMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_PhysicsBody, ECollisionResponse::ECR_Ignore);
+	BallMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldStatic, ECollisionResponse::ECR_Ignore);
 }
 
 void ABall::ActivateBall(FTransform ActivateTransform)
