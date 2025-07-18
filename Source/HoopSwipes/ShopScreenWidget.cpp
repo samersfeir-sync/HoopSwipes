@@ -13,6 +13,7 @@
 #include "TotalGemsWidget.h"
 #include "Components/ScrollBox.h"
 #include "GemShopWidget.h"
+#include "InsufficientCoinsWidget.h"
 
 void UShopScreenWidget::NativeConstruct()
 {
@@ -28,6 +29,8 @@ void UShopScreenWidget::NativeConstruct()
         TArray<FBallsShopStruct> BallsStruct = GameInstanceInterface->GetShopStruct();
         FillItemsContainer(BallsStruct);
     }
+
+    InsufficientCoinsWidget->SetShopWidget(this);
 
     BallsButton->OnClicked.AddDynamic(this, &UShopScreenWidget::BallButtonClicked);
     GemsButton->OnClicked.AddDynamic(this, &UShopScreenWidget::GemButtonClicked);

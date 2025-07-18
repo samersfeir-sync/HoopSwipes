@@ -7,6 +7,7 @@
 #include "TotalGemsWidget.generated.h"
 
 class UTextBlock;
+class IGameInstanceInterface;
 
 UCLASS()
 class HOOPSWIPES_API UTotalGemsWidget : public UUserWidget
@@ -17,8 +18,12 @@ public:
 
 	void UpdateGemsText(int NewTotalGems);
 
+	void SetGameInstanceInterface(IGameInstanceInterface* NewGameInstanceInterface);
+
 private:
 
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* GemsText;
+
+	IGameInstanceInterface* GameInstanceInterface = nullptr;
 };

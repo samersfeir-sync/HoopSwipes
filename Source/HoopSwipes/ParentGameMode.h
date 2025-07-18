@@ -15,9 +15,8 @@ class ABasketballHoop;
 class IBallInterface;
 class UGamePlayWidget;
 class ACameraActor;
-class IGameInstanceInterface;
-class IAGRewardedAdInterface;
 class USecondChanceWidget;
+class IAGRewardedAdInterface;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCameraFetched);
 
@@ -66,6 +65,23 @@ public:
 	virtual void LoadRewardedAd() override;
 
 	virtual FOnCoinAdded& GetOnCoinAddedDelegate() override { return OnCoinAddedDelegate; }
+
+	virtual int32 GetGemsNeededForSecondChance() override { return GemsNeededForSecondChance; }
+
+	virtual void IncrementGemsNeededForSecondChance() override;
+
+	virtual void IncrementRetryCount() override { RetryCount++; }
+
+	virtual IGameInstanceInterface* GetGameInstanceInterface() override { return GameInstanceInterface; }
+
+	UFUNCTION()
+	virtual void GrantSecondChance(FRewardItem Reward) override;
+
+	virtual bool GetCanWatchAd() const override { return bCanWatchAd; }
+
+	virtual int32 GetTotalGems() const override;
+
+	virtual void SetSkippedBoolean(bool bNewValue) override { bSkipped = bNewValue; }
 
 protected:
 
@@ -116,9 +132,6 @@ protected:
 		//override in timed game mode 
 	}
 
-	UFUNCTION()
-	virtual void GrantSecondChance(FRewardItem Reward);
-
 	bool bCanWatchAd = true;
 
 	void ShowSecondChanceWidget();
@@ -145,4 +158,16 @@ private:
 
 	UFUNCTION()
 	void ShowRewardedAdIfAvailable();
+
+	UPROPERTY(EditDefaultsOnly, Category = "Second Chance")
+	int32 BaseGemCost = 1;
+
+	int32 GemsNeededForSecondChance;
+
+	int32 RetryCount = 0;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Second Chance")
+	float GrowthRate = 1.5f;
+
+	bool bSkipped = false;
 };

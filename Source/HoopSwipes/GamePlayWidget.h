@@ -15,6 +15,7 @@ class UTotalCoinsWidget;
 class USecondChanceWidget;
 class UButton;
 class USizeBox;
+class IGameModeInterface;
 
 UCLASS()
 class HOOPSWIPES_API UGamePlayWidget : public UUserWidget
@@ -36,6 +37,9 @@ public:
 
 	UPROPERTY(meta = (BindWidget))
 	USecondChanceWidget* SecondChanceWidget;
+
+	UPROPERTY(meta = (BindWidget))
+	class UTotalGemsWidget* TotalGemsWidget;
 
 	void ShowSecondChanceWidget(bool bShow);
 
@@ -88,4 +92,6 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	class USettingsWidget* SettingsWidget;
+
+	IGameModeInterface* GameModeInterface = nullptr;
 };

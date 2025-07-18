@@ -9,6 +9,8 @@
 class UButton;
 class UTextBlock;
 class UCircularThrobber;
+class URichTextBlock;
+class UGamePlayWidget;
 
 UCLASS()
 class HOOPSWIPES_API USecondChanceWidget : public UUserWidget
@@ -24,6 +26,19 @@ public:
 	UFUNCTION()
 	void RewardAdFailed(int ErrorCode, FString ErrorMessage);
 
+	UPROPERTY(meta = (BindWidget))
+	UButton* WatchAdButton;
+
+	UPROPERTY(meta = (BindWidget))
+	UButton* GemButton;
+
+	void ChangeMainText(FString NewText, bool bErrorText);
+
+	UPROPERTY(meta = (BindWidget))
+	class UTotalGemsWidget* TotalGemsWidget;
+
+	void SetGamePlayWigetInstance(UGamePlayWidget* NewInstance) { GamePlayWidgetInstance = NewInstance; }
+
 private:
 
 	virtual void NativeConstruct() override;
@@ -34,9 +49,6 @@ private:
 	int MaxSkipTime = 12;
 
 	UPROPERTY(meta = (BindWidget))
-	UButton* WatchAdButton;
-
-	UPROPERTY(meta = (BindWidget))
 	UButton* SkipAdButton;
 
 	UPROPERTY(meta = (BindWidget))
@@ -44,9 +56,6 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	UCircularThrobber* LoadingAdThrobber;
-
-	UPROPERTY(meta = (BindWidget))
-	UTextBlock* MainText;
 
 	FTimerHandle SkipTimerHandle;
 
@@ -56,7 +65,14 @@ private:
 	UFUNCTION()
 	void SkipAdButtonClicked();
 
+	UFUNCTION()
+	void GemButtonClicked();
+
 	class IGameModeInterface* GameModeInterface = nullptr;
 
-	void ChangeMainText(FString NewText, FLinearColor NewColor);
+	UPROPERTY(meta = (BindWidget))
+	URichTextBlock* MainText;
+
+	UPROPERTY()
+	UGamePlayWidget* GamePlayWidgetInstance = nullptr;
 };

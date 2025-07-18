@@ -16,6 +16,7 @@ struct FBallsShopStruct;
 class UTotalCoinsWidget;
 class UTotalGemsWidget;
 class UScrollBox;
+class UInsufficientCoinsWidget;
 
 UCLASS()
 class HOOPSWIPES_API UShopScreenWidget : public UUserWidget
@@ -48,9 +49,6 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	UButton* GemsButton;
-
-	UFUNCTION()
-	void GemButtonClicked();
 	
 	UFUNCTION()
 	void BallButtonClicked();
@@ -81,4 +79,10 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	TArray<FBallsShopStruct> BallShopItems;
+
+	UPROPERTY(meta = (BindWidget))
+	UInsufficientCoinsWidget* InsufficientCoinsWidget;
+
+	UFUNCTION()
+	void GemButtonClicked();
 };

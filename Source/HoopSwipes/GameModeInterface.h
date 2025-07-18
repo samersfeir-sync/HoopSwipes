@@ -5,7 +5,10 @@
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
 #include "GameModeEnum.h"
+#include "Ads/AGRewardItem.h"
 #include "GameModeInterface.generated.h"
+
+class IGameInstanceInterface;
 
 DECLARE_DELEGATE_OneParam(FOnCoinAdded, int32)
 
@@ -41,4 +44,12 @@ public:
 	virtual void LoadRewardedAd() = 0;
 	virtual void EndGame() = 0;
 	virtual FOnCoinAdded& GetOnCoinAddedDelegate() = 0;
+	virtual int32 GetGemsNeededForSecondChance() = 0;
+	virtual void IncrementGemsNeededForSecondChance() = 0;
+	virtual void IncrementRetryCount() = 0;
+	virtual IGameInstanceInterface* GetGameInstanceInterface() = 0;
+	virtual void GrantSecondChance(FRewardItem Reward) = 0;
+	virtual bool GetCanWatchAd() const = 0;
+	virtual int32 GetTotalGems() const = 0;
+	virtual void SetSkippedBoolean(bool bNewValue) = 0;
 };

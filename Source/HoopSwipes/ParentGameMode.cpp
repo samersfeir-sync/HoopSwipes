@@ -18,6 +18,7 @@
 #include "Interface/AGRewardedAdInterface.h"
 #include "Ads/AGAdLibrary.h"
 #include "SecondChanceWidget.h"
+#include "TotalGemsWidget.h"
 
 AParentGameMode::AParentGameMode()
 {
@@ -54,6 +55,9 @@ void AParentGameMode::RestartGame()
 	UpdateScoreMultiplier(true);
 	CollectedCoins = 0;
 	bCanWatchAd = true;
+	RetryCount = 0;
+	GemsNeededForSecondChance = BaseGemCost;
+	bSkipped = false;
 
 	if (GamePlayWidgetInstance)
 	{
@@ -104,11 +108,18 @@ void AParentGameMode::ActivateNextBall(bool RandomLocation)
 	}
 }
 
+void AParentGameMode::IncrementGemsNeededForSecondChance()
+{
+	GemsNeededForSecondChance = FMath::CeilToInt(BaseGemCost * FMath::Pow(GrowthRate, RetryCount));
+}
+
 void AParentGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
 	World = GetWorld();
+
+	GemsNeededForSecondChance = BaseGemCost;
 
 	if (World)
 	{
@@ -173,6 +184,7 @@ void AParentGameMode::BeginPlay()
 			{
 				GamePlayWidgetInstance->AddToViewport();
 				GamePlayWidgetInstance->TotalCoinsWidget->SetGameInstanceInterface(GameInstanceInterface);
+				GamePlayWidgetInstance->TotalGemsWidget->SetGameInstanceInterface(GameInstanceInterface);
 				SecondChanceWidgetInstance = GamePlayWidgetInstance->SecondChanceWidget;
 			}
 		}
@@ -205,11 +217,18 @@ void AParentGameMode::ShowRewardedAdIfAvailable()
 	RewardedAdInterface->BindEventToOnUserEarnedReward(Delegate);
 	RewardedAdInterface->Show();
 	GamePlayWidgetInstance->ShowSecondChanceWidget(false);
+	bCanWatchAd = false;
 }
 
 void AParentGameMode::GrantSecondChance(FRewardItem Reward)
 {
 	//override in child game mode class
+}
+
+int32 AParentGameMode::GetTotalGems() const
+{
+	FUserProgression UserProgression = GameInstanceInterface->GetUserProgression();
+	return UserProgression.TotalGems;
 }
 
 void AParentGameMode::LoadRewardedAd()
@@ -237,9 +256,8 @@ void AParentGameMode::LoadRewardedAd()
 
 void AParentGameMode::EndGame()
 {
-	if (bCanWatchAd)
+	if ((bCanWatchAd || GetTotalGems() >= GetGemsNeededForSecondChance()) && !bSkipped)
 	{
-		bCanWatchAd = false;
 		ShowSecondChanceWidget();
 	}
 

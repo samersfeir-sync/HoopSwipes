@@ -12,6 +12,9 @@
 #include "Components/SizeBox.h"
 #include "HomeButtonWidget.h"
 #include "SettingsWidget.h"
+#include "TotalGemsWidget.h"
+#include "GameModeInterface.h"
+#include "FunctionsLibrary.h"
 
 void UGamePlayWidget::ShowRestartButton(bool bShow)
 {
@@ -73,12 +76,37 @@ void UGamePlayWidget::ShowSecondChanceWidget(bool bShow)
 		return;
 	}
 
+	bool bCanWatchAd = GameModeInterface->GetCanWatchAd();
+	SecondChanceWidget->WatchAdButton->SetIsEnabled(bCanWatchAd);
+
+	int32 GemsNeeded = GameModeInterface->GetGemsNeededForSecondChance();
+	int32 TotalGems = GameModeInterface->GetTotalGems();
+	bool bCanUseGems = TotalGems >= GemsNeeded;
+	SecondChanceWidget->GemButton->SetIsEnabled(bCanUseGems);
+
+	FString GemText = FString::Printf(TEXT("%d gem%s"), GemsNeeded, GemsNeeded == 1 ? TEXT("") : TEXT("s"));
+	FString UseGemsOnly = FString::Printf(TEXT("Don't give up yet! Use <CyanText>%s</> for a second shot!"), *GemText);
+	FString BothOptions = FString::Printf(TEXT("Don't give up yet! Watch an ad or use <CyanText>%s</> for a second shot!"), *GemText);
+	FString WatchAdOnly = FString::Printf(TEXT("Don't give up yet! Watch an ad for a second shot!"));
+
+	SecondChanceWidget->ChangeMainText(
+		bCanWatchAd && TotalGems >= GemsNeeded ? BothOptions :
+		bCanWatchAd ? WatchAdOnly :
+		UseGemsOnly,
+		false
+	);
+
+	SecondChanceWidget->TotalGemsWidget->UpdateGemsText(TotalGems);
 	SecondChanceWidget->StartSkipTimer();
 }
 
 void UGamePlayWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
+
+	GameModeInterface = UFunctionsLibrary::GetGameModeInterface(this);
+
+	SecondChanceWidget->SetGamePlayWigetInstance(this);
 
 	PauseButton->OnClicked.AddDynamic(this, &UGamePlayWidget::PauseButtonClicked);
 	ResumeButton->OnClicked.AddDynamic(this, &UGamePlayWidget::ResumeButtonClicked);

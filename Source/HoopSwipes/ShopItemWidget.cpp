@@ -10,6 +10,8 @@
 #include "UserProgression.h"
 #include "Components/Border.h"
 #include "ShopScreenWidget.h"
+#include "Kismet/GamePlayStatics.h"
+#include "InsufficientCoinsWidget.h"
 
 void UShopItemWidget::SetItemImage(UTexture2D* Image)
 {
@@ -81,16 +83,24 @@ void UShopItemWidget::BuyButtonClicked()
 	{
 		FUserProgression UserProgression = GameInstanceInterface->GetUserProgression();
 
-		if (UserProgression.PurchasedBalls.Find(BallType) == INDEX_NONE)
+		if (UserProgression.PurchasedBalls.Find(BallType) == INDEX_NONE) //not purchased
 		{
 			if (UserProgression.TotalCoins >= ItemPrice)
 			{
-				UserProgression.TotalCoins -= ItemPrice;
-				UserProgression.PurchasedBalls.Add(BallType);
-				GameInstanceInterface->SaveUserProgression(UserProgression);
-				GameInstanceInterface->UpdateShopItemsStruct();
-				GameInstanceInterface->SetBallType(BallType);
-				OnBallPurchased.Broadcast(GameInstanceInterface->GetShopStruct());
+				PurchaseItem(UserProgression, 0);
+			}
+
+			else
+			{
+				
+				UInsufficientCoinsWidget* InsufficientCoinsWidget = ParentWidget->InsufficientCoinsWidget;
+
+				int32 GemsNeeded = FMath::RoundToInt((ItemPrice - UserProgression.TotalCoins) * GemsNeededMultiplier);
+				InsufficientCoinsWidget->SetGemsNeeded(GemsNeeded);
+				InsufficientCoinsWidget->SetShopItemWidget(this);
+				InsufficientCoinsWidget->SetInsufficientCoinsText(GemsNeeded);
+				InsufficientCoinsWidget->SetGemsAmountText(GemsNeeded);
+				InsufficientCoinsWidget->SetVisibility(ESlateVisibility::Visible);
 			}
 		}
 
@@ -114,4 +124,18 @@ void UShopItemWidget::NativeConstruct()
 	}
 
 	UpdateBorderColor();
+}
+
+void UShopItemWidget::PurchaseItem(FUserProgression UserProgression, int32 GemsUsed)
+{
+	UserProgression.PurchasedBalls.Add(BallType);
+	UserProgression.TotalCoins = FMath::Max(0, UserProgression.TotalCoins - ItemPrice);
+	UserProgression.TotalGems = FMath::Max(0, UserProgression.TotalGems - GemsUsed);
+
+	GameInstanceInterface->SaveUserProgression(UserProgression);
+	GameInstanceInterface->UpdateShopItemsStruct();
+	GameInstanceInterface->SetBallType(BallType);
+
+	OnBallPurchased.Broadcast(GameInstanceInterface->GetShopStruct());
+	UGameplayStatics::PlaySound2D(this, PurchaseSound);
 }

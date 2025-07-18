@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "BallType.h"
+#include "UserProgression.h"
 #include "ShopItemWidget.generated.h"
 
 class UImage;
@@ -42,6 +43,8 @@ public:
 
 	void SetParentWidgetReference(UShopScreenWidget* NewParentWidget);
 
+	void PurchaseItem(FUserProgression UserProgression, int32 GemsUsed);
+
 private:
 
 	EBallType BallType;
@@ -74,4 +77,10 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	FLinearColor SelectedOutlineColor;
+
+	UPROPERTY(EditDefaultsOnly)
+	USoundBase* PurchaseSound;
+
+	UPROPERTY(EditDefaultsOnly)
+	float GemsNeededMultiplier = 1.2f;
 };
