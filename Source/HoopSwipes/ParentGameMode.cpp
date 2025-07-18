@@ -58,6 +58,9 @@ void AParentGameMode::RestartGame()
 	if (GamePlayWidgetInstance)
 	{
 		GamePlayWidgetInstance->ShowRestartButton(false);
+		GamePlayWidgetInstance->EnablePauseButton(true);
+		GamePlayWidgetInstance->ShowHomeButton(false);
+		GamePlayWidgetInstance->ShowSettingsButton(false);
 		//GamePlayWidgetInstance->ShowScoreWidget(true);
 		GamePlayWidgetInstance->UpdateScoreUI(CurrentScore);
 	}
@@ -146,7 +149,6 @@ void AParentGameMode::BeginPlay()
 		if (BallDeactivationBox)
 		{
 			BallDeactivationBox->OnActorBeginOverlap.AddDynamic(this, &AParentGameMode::OnTriggerOverlap);
-
 		}
 
 		BasketballHoop = Cast<ABasketballHoop>(UGameplayStatics::GetActorOfClass(World, ABasketballHoop::StaticClass()));
@@ -173,7 +175,6 @@ void AParentGameMode::BeginPlay()
 				GamePlayWidgetInstance->TotalCoinsWidget->SetGameInstanceInterface(GameInstanceInterface);
 				SecondChanceWidgetInstance = GamePlayWidgetInstance->SecondChanceWidget;
 			}
-
 		}
 	}
 }
@@ -236,21 +237,33 @@ void AParentGameMode::LoadRewardedAd()
 
 void AParentGameMode::EndGame()
 {
-	if (GamePlayWidgetInstance)
+	if (bCanWatchAd)
 	{
-		GamePlayWidgetInstance->ShowRestartButton(true);
-		//GamePlayWidgetInstance->ShowScoreWidget(false);
+		bCanWatchAd = false;
+		ShowSecondChanceWidget();
 	}
 
-	if (CurrentScore > HighScore)
+	else
 	{
-		HighScore = CurrentScore;
-		GameInstanceInterface->SaveHighScore(GameModeType, CurrentScore);
-	}
+		if (GamePlayWidgetInstance)
+		{
+			GamePlayWidgetInstance->EnablePauseButton(false);
+			GamePlayWidgetInstance->ShowRestartButton(true);
+			GamePlayWidgetInstance->ShowHomeButton(true);
+			GamePlayWidgetInstance->ShowSettingsButton(true);
+			//GamePlayWidgetInstance->ShowScoreWidget(false);
+		}
 
-	FUserProgression UserProgression = GameInstanceInterface->GetUserProgression();
-	UserProgression.TotalCoins += CollectedCoins;
-	GameInstanceInterface->SaveUserProgression(UserProgression);
+		if (CurrentScore > HighScore)
+		{
+			HighScore = CurrentScore;
+			GameInstanceInterface->SaveHighScore(GameModeType, CurrentScore);
+		}
+
+		FUserProgression UserProgression = GameInstanceInterface->GetUserProgression();
+		UserProgression.TotalCoins += CollectedCoins;
+		GameInstanceInterface->SaveUserProgression(UserProgression);
+	}
 }
 
 void AParentGameMode::UpdateScoreMultiplier(bool Reset)

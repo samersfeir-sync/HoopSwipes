@@ -63,4 +63,6 @@ public:
 	virtual FString GetRewardedAdUnitID() const = 0;
 	virtual const TScriptInterface<IAGBannerAdInterface> GetBannerAdInterface() const = 0;
 
+	virtual void PlayBackgroundMusic() = 0;
+	virtual void StopBackgroundMusic() = 0;
 };

@@ -102,16 +102,7 @@ void ATimedGameMode::ReduceGameTime()
 
 		if (ActiveBalls.Num() == 0)
 		{
-			if (bCanWatchAd)
-			{
-				bCanWatchAd = false;
-				ShowSecondChanceWidget();
-			}
-
-			else
-			{
-				EndGame();
-			}
+			EndGame();
 		}
 
 		else

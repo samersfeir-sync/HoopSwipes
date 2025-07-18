@@ -10,7 +10,7 @@ class UButton;
 class UTextBlock;
 class UShopScreenWidget;
 class UCanvasPanel;
-
+class USettingsWidget;
 
 DECLARE_MULTICAST_DELEGATE(FOnGameStartedDelegate);
 
@@ -39,6 +39,15 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	UButton* ExitGameButton;
+
+	UPROPERTY(meta = (BindWidget))
+	UButton* SettingsButton;
+
+	UPROPERTY(meta = (BindWidget))
+	USettingsWidget* SettingsWidget;
+
+	UFUNCTION()
+	void SettingsButtonClicked();
 
 	virtual void NativeConstruct() override;
 

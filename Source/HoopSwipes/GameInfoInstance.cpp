@@ -6,6 +6,7 @@
 #include "GameSave.h"
 #include "MoviePlayer.h"
 #include "Ads/AGAdLibrary.h"
+#include "Components/AudioComponent.h"
 
 FVector2D UGameInfoInstance::GetViewportSize() const
 {
@@ -172,6 +173,16 @@ void UGameInfoInstance::Init()
 	LoadUserProgression();
 	LoadUserPreferences();
 	GetMoviePlayer()->OnMoviePlaybackFinished().AddUObject(this, &UGameInfoInstance::OnMoviePlaybackFinished);
+
+	MusicAudioComponent = NewObject<UAudioComponent>(this);
+
+	if (MusicAudioComponent)
+	{
+		MusicAudioComponent->SetSound(GameMusic);
+		MusicAudioComponent->bAutoActivate = false;
+		MusicAudioComponent->bIsUISound = true;
+		MusicAudioComponent->RegisterComponent();
+	}
 }
 
 void UGameInfoInstance::FetchViewportSize()
@@ -199,6 +210,11 @@ void UGameInfoInstance::InitializeADUnits()
 
 void UGameInfoInstance::OnMoviePlaybackFinished()
 {
+	bool bMusicMuted = UserPreferences.bIsMusicMuted;
+
+	if (!bMusicMuted)
+		PlayBackgroundMusic();
+
 	if (UserPreferences.bNoAds)
 		return;
 
@@ -212,5 +228,21 @@ void UGameInfoInstance::OnMoviePlaybackFinished()
 	if (BannerAdInterface)
 	{
 		BannerAdInterface->LoadAd(true);
+	}
+}
+
+void UGameInfoInstance::PlayBackgroundMusic()
+{
+	if (MusicAudioComponent)
+	{
+		MusicAudioComponent->Play();
+	}
+}
+
+void UGameInfoInstance::StopBackgroundMusic()
+{
+	if (MusicAudioComponent)
+	{
+		MusicAudioComponent->Stop();
 	}
 }

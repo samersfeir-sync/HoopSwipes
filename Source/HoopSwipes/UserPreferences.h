@@ -17,4 +17,10 @@ struct FUserPreferences
     UPROPERTY(SaveGame)
 	bool bNoAds = false;
 
+    UPROPERTY(EditDefaultsOnly, Category = "Sound Settings")
+    bool bIsMusicMuted = false;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Sound Settings")
+    bool bIsSFXMuted = false;
+
 };

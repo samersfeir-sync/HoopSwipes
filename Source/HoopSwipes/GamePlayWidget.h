@@ -42,6 +42,10 @@ public:
 	UFUNCTION()
 	void PauseButtonClicked();
 
+	void EnablePauseButton(bool bEnable);
+	void ShowHomeButton(bool bShow);
+	void ShowSettingsButton(bool bShow);
+
 private:
 
 	virtual void NativeConstruct() override;
@@ -75,4 +79,13 @@ private:
 
 	UFUNCTION()
 	void ResumeButtonClicked();
+
+	UPROPERTY(meta = (BindWidget))
+	UButton* SettingsButton;
+
+	UFUNCTION()
+	void SettingsButtonClicked();
+
+	UPROPERTY(meta = (BindWidget))
+	class USettingsWidget* SettingsWidget;
 };

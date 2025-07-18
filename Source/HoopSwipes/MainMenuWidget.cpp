@@ -11,6 +11,12 @@
 #include "HighScoreStruct.h"
 #include "ShopScreenWidget.h"
 #include "Components/CanvasPanel.h"
+#include "SettingsWidget.h"
+
+void UMainMenuWidget::SettingsButtonClicked()
+{
+	SettingsWidget->SetVisibility(ESlateVisibility::Visible);
+}
 
 void UMainMenuWidget::NativeConstruct()
 {
@@ -62,6 +68,11 @@ void UMainMenuWidget::NativeConstruct()
 		{
 			ShopScreen->BackButton->OnClicked.AddDynamic(this, &UMainMenuWidget::OnShopBackButtonClicked);
 		}
+	}
+
+	if (SettingsButton)
+	{
+		SettingsButton->OnClicked.AddDynamic(this, &UMainMenuWidget::SettingsButtonClicked);
 	}
 }
 

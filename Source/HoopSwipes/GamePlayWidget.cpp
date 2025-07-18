@@ -10,6 +10,8 @@
 #include "Components/Button.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/SizeBox.h"
+#include "HomeButtonWidget.h"
+#include "SettingsWidget.h"
 
 void UGamePlayWidget::ShowRestartButton(bool bShow)
 {
@@ -80,6 +82,7 @@ void UGamePlayWidget::NativeConstruct()
 
 	PauseButton->OnClicked.AddDynamic(this, &UGamePlayWidget::PauseButtonClicked);
 	ResumeButton->OnClicked.AddDynamic(this, &UGamePlayWidget::ResumeButtonClicked);
+	SettingsButton->OnClicked.AddDynamic(this, &UGamePlayWidget::SettingsButtonClicked);
 }
 
 void UGamePlayWidget::PauseButtonClicked()
@@ -87,6 +90,27 @@ void UGamePlayWidget::PauseButtonClicked()
 	UGameplayStatics::SetGamePaused(this, true);
 	ResumeButtonSizeBox->SetVisibility(ESlateVisibility::Visible);
 	PauseButton->SetIsEnabled(false);
+	ShowHomeButton(true);
+	ShowSettingsButton(true);
+}
+
+void UGamePlayWidget::EnablePauseButton(bool bEnable)
+{
+	PauseButton->SetIsEnabled(bEnable);
+}
+
+void UGamePlayWidget::ShowHomeButton(bool bShow)
+{
+	ESlateVisibility HomeButtonVisibility = bShow ? ESlateVisibility::Visible : ESlateVisibility::Hidden;
+
+	HomeButtonWidget->SetVisibility(HomeButtonVisibility);
+}
+
+void UGamePlayWidget::ShowSettingsButton(bool bShow)
+{
+	ESlateVisibility SettingsButtonVisibility = bShow ? ESlateVisibility::Visible : ESlateVisibility::Hidden;
+
+	SettingsButton->SetVisibility(SettingsButtonVisibility);
 }
 
 void UGamePlayWidget::ResumeButtonClicked()
@@ -94,4 +118,11 @@ void UGamePlayWidget::ResumeButtonClicked()
 	UGameplayStatics::SetGamePaused(this, false);
 	ResumeButtonSizeBox->SetVisibility(ESlateVisibility::Hidden);
 	PauseButton->SetIsEnabled(true);
+	ShowHomeButton(false);
+	ShowSettingsButton(false);
+}
+
+void UGamePlayWidget::SettingsButtonClicked()
+{
+	SettingsWidget->SetVisibility(ESlateVisibility::Visible);
 }

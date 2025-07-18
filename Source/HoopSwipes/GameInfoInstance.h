@@ -61,6 +61,9 @@ public:
 	virtual FString GetRewardedAdUnitID() const override { return RewardedADUnitID; }
 	virtual const TScriptInterface<IAGBannerAdInterface> GetBannerAdInterface() const override { return BannerAdInterface; }
 
+	virtual void PlayBackgroundMusic() override;
+	virtual void StopBackgroundMusic() override;
+
 private:
 
 	virtual void Init() override;
@@ -99,4 +102,10 @@ private:
 	void OnMoviePlaybackFinished();
 
 	TScriptInterface<IAGBannerAdInterface> BannerAdInterface;
+
+	UPROPERTY()
+	UAudioComponent* MusicAudioComponent;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Audio")
+	USoundBase* GameMusic;
 };

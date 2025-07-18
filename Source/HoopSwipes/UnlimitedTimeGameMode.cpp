@@ -43,16 +43,7 @@ void AUnlimitedTimeGameMode::OnTriggerOverlap(AActor* OverlappedActor, AActor* O
 	{
 		if (!BallInterface->GetScoredBoolean())
 		{
-			if (bCanWatchAd)
-			{
-				bCanWatchAd = false;
-				ShowSecondChanceWidget();
-			}
-
-			else
-			{
-				EndGame();
-			}
+			EndGame();
 		}
 
 		BallInterface->SetScoredBoolean(false);
