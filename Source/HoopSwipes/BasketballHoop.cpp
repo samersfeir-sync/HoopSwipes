@@ -151,15 +151,12 @@ void ABasketballHoop::OnScoreOverlap(UPrimitiveComponent* OverlappedComponent, A
 							bool Swish = BallInterface->GetSwishBoolean();
 							GameModeInterface->UpdateScoreMultiplier(!Swish);
 							GameModeInterface->UpdateScore();
-							GameModeInterface->AddCoins();
+							GameModeInterface->GetOnCoinAddedDelegate().ExecuteIfBound(1);
 						}
-
 					}
 				}
-
 			}
 		}
-
 	}
 }
 

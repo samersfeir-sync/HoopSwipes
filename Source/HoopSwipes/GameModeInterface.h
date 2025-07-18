@@ -7,6 +7,8 @@
 #include "GameModeEnum.h"
 #include "GameModeInterface.generated.h"
 
+DECLARE_DELEGATE_OneParam(FOnCoinAdded, int32)
+
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
 class UGameModeInterface : public UInterface
@@ -33,9 +35,10 @@ public:
 	virtual void AssignCameraFetchedDelegate(const FScriptDelegate& Delegate) = 0;
 	virtual EGameModeType GetGameModeType() const = 0;
 	virtual void UpdateScoreMultiplier(bool Reset) = 0;
-	virtual void AddCoins() = 0;
+	virtual void AddCoins(int32 CoinsAmount) = 0;
 	virtual void AddActiveBall(ABall* ActiveBall) = 0;
 	virtual void RemoveActiveBall(ABall* ActiveBall) = 0;
 	virtual void LoadRewardedAd() = 0;
 	virtual void EndGame() = 0;
+	virtual FOnCoinAdded& GetOnCoinAddedDelegate() = 0;
 };

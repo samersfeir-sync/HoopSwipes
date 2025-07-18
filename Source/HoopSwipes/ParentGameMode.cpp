@@ -273,9 +273,9 @@ void AParentGameMode::UpdateScoreMultiplier(bool Reset)
 
 }
 
-void AParentGameMode::AddCoins()
+void AParentGameMode::AddCoins(int32 CoinsAmount)
 {
-	CollectedCoins += ScoreMultiplier;
+	CollectedCoins += CoinsAmount;
 	int CoinsToDisplay = GameInstanceInterface->GetUserProgression().TotalCoins + CollectedCoins;
 	GamePlayWidgetInstance->TotalCoinsWidget->UpdateCoinsText(CoinsToDisplay);
 }

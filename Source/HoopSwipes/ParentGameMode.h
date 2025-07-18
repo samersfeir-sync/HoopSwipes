@@ -61,9 +61,11 @@ public:
 
 	virtual void UpdateScoreMultiplier(bool Reset) override;
 
-	virtual void AddCoins() override;
+	virtual void AddCoins(int32 CoinsAmount) override;
 
 	virtual void LoadRewardedAd() override;
+
+	virtual FOnCoinAdded& GetOnCoinAddedDelegate() override { return OnCoinAddedDelegate; }
 
 protected:
 
@@ -120,6 +122,8 @@ protected:
 	bool bCanWatchAd = true;
 
 	void ShowSecondChanceWidget();
+
+	FOnCoinAdded OnCoinAddedDelegate;
 
 private:
 

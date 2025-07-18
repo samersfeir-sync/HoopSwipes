@@ -126,6 +126,7 @@ void ATimedGameMode::UpdateScore()
 
 	if (IsTargetScoreReached(ScoreTarget))
 	{
+		AddCoins(ScoreTarget / 2);
 		ScoreTarget = ScoreTarget + (10 * TargetMultiplier);
 		TargetMultiplier++;
 		GamePlayWidgetInstance->UpdateTargetScoreUI(ScoreTarget);

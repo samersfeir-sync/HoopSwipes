@@ -24,6 +24,8 @@ void AUnlimitedTimeGameMode::BeginPlay()
 		BasketballHoop->OnScored.AddDynamic(this, &AParentGameMode::ActivateNextBall);
 	}
 
+	OnCoinAddedDelegate.BindUObject(this, &AParentGameMode::AddCoins);
+
 	AGround* Ground = Cast<AGround>(UGameplayStatics::GetActorOfClass(World, AGround::StaticClass()));
 
 	if (Ground)
