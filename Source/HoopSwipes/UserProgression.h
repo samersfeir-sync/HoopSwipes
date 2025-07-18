@@ -11,14 +11,18 @@ struct FUserProgression
 {
     GENERATED_BODY()
 
-    UPROPERTY()
+    UPROPERTY(SaveGame)
     TArray<EBallType> PurchasedBalls;
 
     UPROPERTY(EditDefaultsOnly)
     int TotalCoins;
 
+    UPROPERTY(EditDefaultsOnly)
+    int TotalGems;
+
     FUserProgression()
-        : TotalCoins(0)
+        : TotalCoins(0),
+        TotalGems(0)
     {
         PurchasedBalls.Add(EBallType::Basketball);
     }

@@ -59,6 +59,7 @@ public:
 	virtual FString GetBannerAdUnitID() const override { return BannerADUnitID; }
 	virtual FString GetInterstitialAdUnitID() const override { return InterstitialADUnitID; }
 	virtual FString GetRewardedAdUnitID() const override { return RewardedADUnitID; }
+	virtual const TScriptInterface<IAGBannerAdInterface> GetBannerAdInterface() const override { return BannerAdInterface; }
 
 private:
 
@@ -94,4 +95,8 @@ private:
 	FString BannerADUnitID;
 	FString InterstitialADUnitID;
 	FString RewardedADUnitID;
+
+	void OnMoviePlaybackFinished();
+
+	TScriptInterface<IAGBannerAdInterface> BannerAdInterface;
 };

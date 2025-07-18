@@ -27,8 +27,8 @@ void UShopItemWidget::SetItemPriceText(const FString& PriceText, bool AdjustFont
 
 		if (AdjustFont)
 		{
-			ItemPriceText->SetRenderTranslation(FVector2D(-53, 4));
-			ItemPriceText->Font.Size = 40;
+			ItemPriceText->SetRenderTranslation(FVector2D(-59, 0));
+			ItemPriceText->Font.Size = 35;
 		}
 	}
 }
@@ -90,7 +90,7 @@ void UShopItemWidget::BuyButtonClicked()
 				GameInstanceInterface->SaveUserProgression(UserProgression);
 				GameInstanceInterface->UpdateShopItemsStruct();
 				GameInstanceInterface->SetBallType(BallType);
-				OnBallPurchased.Broadcast();
+				OnBallPurchased.Broadcast(GameInstanceInterface->GetShopStruct());
 			}
 		}
 

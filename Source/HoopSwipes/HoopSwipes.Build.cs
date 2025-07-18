@@ -8,7 +8,7 @@ public class HoopSwipes : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "UMG", "MediaAssets", "AdmobGoodies" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "UMG", "MediaAssets", "AdmobGoodies", "MoviePlayer" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 

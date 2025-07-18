@@ -4,7 +4,6 @@
 #include "MainMenuGameMode.h"
 #include "MainMenuWidget.h"
 #include "Ads/AGAdLibrary.h"
-#include "Interface/AGBannerAdInterface.h"
 #include "Interface/AGInterstitialAdInterface.h"
 #include "GameInstanceInterface.h"
 #include "FunctionsLibrary.h"
@@ -36,18 +35,7 @@ void AMainMenuGameMode::BeginPlay()
 
 		if (GameInstanceInterface)
 		{
-			//banner ad
-			if (TScriptInterface<IAGBannerAdInterface> BannerAdInterface = UAGAdLibrary::MakeBannerAd(
-				GameInstanceInterface->GetBannerAdUnitID(),
-				EAdSizeType::Banner,
-				EAdPosition::Bottom
-			))
-			{
-				BannerAdInterface->LoadAd(true);
-			}
-
 			//interstitial ad
-
 			GetWorld()->GetTimerManager().SetTimer(InterstitialTimerHandle, this, &AMainMenuGameMode::LoadInterstitialAd, 15.0f, true);
 		}
 	}

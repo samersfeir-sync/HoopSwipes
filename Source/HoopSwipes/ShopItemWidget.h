@@ -14,7 +14,7 @@ class IGameInstanceInterface;
 class UBorder;
 class UShopScreenWidget;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnBallPurchased);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnBallPurchased, TArray<FBallsShopStruct>, BallsShopStruct);
 
 UCLASS()
 class HOOPSWIPES_API UShopItemWidget : public UUserWidget

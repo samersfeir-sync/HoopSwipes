@@ -7,10 +7,8 @@
 
 void UTotalCoinsWidget::UpdateCoinsText(int CoinsAmount)
 {
-    if (TotalCoins && GameInstanceInterface)
-    {
-        TotalCoins->SetText(FText::AsNumber(CoinsAmount));
-    }
+    FString FormattedCoins = FString::Printf(TEXT("%04d"), CoinsAmount);
+    TotalCoins->SetText(FText::FromString(FormattedCoins));
 }
 
 void UTotalCoinsWidget::SetGameInstanceInterface(IGameInstanceInterface* NewGameInstanceInterface)

@@ -11,12 +11,10 @@ struct FUserPreferences
 {
     GENERATED_BODY()
 
-    FUserPreferences()
-        : DesiredBall(EBallType::Basketball)
-    {
-    }
+    UPROPERTY(SaveGame)
+    EBallType DesiredBall = EBallType::Basketball;
 
-    UPROPERTY()
-    EBallType DesiredBall;
+    UPROPERTY(SaveGame)
+	bool bNoAds = false;
 
 };

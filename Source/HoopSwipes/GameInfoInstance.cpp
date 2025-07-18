@@ -4,6 +4,8 @@
 #include "GameInfoInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameSave.h"
+#include "MoviePlayer.h"
+#include "Ads/AGAdLibrary.h"
 
 FVector2D UGameInfoInstance::GetViewportSize() const
 {
@@ -169,6 +171,7 @@ void UGameInfoInstance::Init()
 	LoadHighScore();
 	LoadUserProgression();
 	LoadUserPreferences();
+	GetMoviePlayer()->OnMoviePlaybackFinished().AddUObject(this, &UGameInfoInstance::OnMoviePlaybackFinished);
 }
 
 void UGameInfoInstance::FetchViewportSize()
@@ -192,4 +195,22 @@ void UGameInfoInstance::InitializeADUnits()
 	RewardedADUnitID = TEXT("");
 
 #endif
+}
+
+void UGameInfoInstance::OnMoviePlaybackFinished()
+{
+	if (UserPreferences.bNoAds)
+		return;
+
+	//banner ad
+	BannerAdInterface = UAGAdLibrary::MakeBannerAd(
+		BannerADUnitID,
+		EAdSizeType::Banner,
+		EAdPosition::Bottom
+	);
+
+	if (BannerAdInterface)
+	{
+		BannerAdInterface->LoadAd(true);
+	}
 }

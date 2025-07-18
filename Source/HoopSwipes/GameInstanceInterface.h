@@ -9,6 +9,7 @@
 #include "BallsShopStruct.h"
 #include "UserProgression.h"
 #include "UserPreferences.h"
+#include "Interface/AGBannerAdInterface.h"
 #include "GameInstanceInterface.generated.h"
 
 // This class does not need to be modified.
@@ -60,5 +61,6 @@ public:
 	virtual FString GetBannerAdUnitID() const = 0;
 	virtual FString GetInterstitialAdUnitID() const = 0;
 	virtual FString GetRewardedAdUnitID() const = 0;
+	virtual const TScriptInterface<IAGBannerAdInterface> GetBannerAdInterface() const = 0;
 
 };
